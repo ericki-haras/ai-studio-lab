@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Studio Lab</title>
+<meta name="description" content="A working repo where our design team practises shipping — clone it, branch it, build a lab, open a pull request.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+<script>window.SITE_ROOT = "";</script>
+</head>
+<body>
+
+<!-- ===================== nav ===================== -->
+<header class="topbar">
+  <div class="topbar__inner">
+    <a class="brand" href="index.html">
+      <span class="brand__dot"></span>
+      <strong>ai-studio-lab</strong>
+      <span>/ main</span>
+    </a>
+
+    <nav aria-label="Main">
+      <ul class="navlist">
+        <li>
+          <a class="navlink" href="index.html" aria-current="page">Home</a>
+        </li>
+        <li class="navgroup">
+          <button class="navlink" data-lab-toggle aria-expanded="false" aria-haspopup="true" aria-controls="lab-panel">
+            Lab
+            <span class="navlink__caret" aria-hidden="true"></span>
+          </button>
+          <ul class="dropdown" id="lab-panel" data-lab-panel data-lab-menu></ul>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main class="shell spine">
+
+  <!-- ===================== hero ===================== -->
+  <section class="row hero">
+    <div class="row__graph">
+      <span class="node node--lit" style="top: 18px"></span>
+    </div>
+    <div class="row__body">
+      <p class="eyebrow rise" data-d="1">Design Engineering Guild · repo 01</p>
+
+      <h1 class="display hero__title">
+        <span class="rise" data-d="1" style="display:block">This repo</span>
+        <span class="l2 rise" data-d="2">is the</span>
+        <span class="l3 rise" data-d="3">classroom</span>
+      </h1>
+
+      <p class="lede hero__lede rise" data-d="4">
+        Every designer on the team gets a folder here to build whatever they want.
+        Getting it onto the live site is the part we're actually practising: branch,
+        commit, pull request, review, merge. The work is yours. The workflow is the lesson.
+      </p>
+
+      <div class="hero__actions rise" data-d="5">
+        <a class="btn btn--primary" href="#ship">Ship your first lab</a>
+        <a class="btn" href="#review">What reviewers look for</a>
+      </div>
+
+      <div class="hero__stats rise" data-d="5">
+        <div>
+          <div class="stat__n" data-lab-count>01</div>
+          <div class="stat__l">Labs published</div>
+        </div>
+        <div>
+          <div class="stat__n">08</div>
+          <div class="stat__l">Steps to live</div>
+        </div>
+        <div>
+          <div class="stat__n">1</div>
+          <div class="stat__l">Shared file to touch</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== labs ===================== -->
+  <section class="row section reveal" id="labs">
+    <div class="row__graph">
+      <span class="node" data-node style="top: 8px"></span>
+    </div>
+    <div class="row__body">
+      <p class="eyebrow">Published labs</p>
+      <h2 class="display section__title">Merged into main</h2>
+      <p class="lede">
+        Each card below is somebody's folder, reviewed and merged. Every lab gets a
+        branch colour so you can follow it through the graph.
+      </p>
+
+      <div class="labgrid" data-lab-grid></div>
+    </div>
+  </section>
+
+  <!-- ===================== how it works ===================== -->
+  <section class="row section reveal" id="ship">
+    <div class="row__graph">
+      <span class="node" data-node style="top: 8px"></span>
+    </div>
+    <div class="row__body">
+      <p class="eyebrow">The workflow</p>
+      <h2 class="display section__title">Eight steps to live</h2>
+      <p class="lede">
+        Read the whole thing once before you start typing. Anywhere you see
+        <code style="font-family:var(--mono);font-size:.86em;background:var(--surface);border:1px solid var(--wire-dim);border-radius:3px;padding:1px 5px">your-name</code>,
+        swap in your own — lowercase, hyphens instead of spaces.
+      </p>
+
+      <div class="steps">
+
+        <!-- 01 -->
+        <div class="step">
+          <div class="step__graph"><span class="step__node"></span></div>
+          <div class="step__body">
+            <div class="step__n">01</div>
+            <h3 class="step__h">Get the repo onto your machine</h3>
+            <p class="step__p">
+              Cloning downloads the whole project plus its entire history. You only
+              ever do this once per machine.
+            </p>
+            <div class="code">
+              <div class="code__bar">
+                <span class="code__label">Terminal</span>
+                <button class="copy" type="button">Copy</button>
+              </div>
+<pre><span class="c"># replace this URL with our actual repo URL</span>
+<span class="k">git clone</span> <span class="s">https://github.com/YOUR-ORG/ai-studio-lab.git</span>
+<span class="k">cd</span> <span class="s">ai-studio-lab</span></pre>
+            </div>
+          </div>
+        </div>
+
+        <!-- 02 -->
+        <div class="step">
+          <div class="step__graph"><span class="step__node"></span></div>
+          <div class="step__body">
+            <div class="step__n">02</div>
+            <h3 class="step__h">Start a branch</h3>
+            <p class="step__p">
+              A branch is your own copy of the project where nothing you do can break
+              anyone else's work. Always branch from an up-to-date <code>main</code>.
+            </p>
+            <div class="code">
+              <div class="code__bar">
+                <span class="code__label">Terminal</span>
+                <button class="copy" type="button">Copy</button>
+              </div>
+<pre><span class="k">git switch</span> main
+<span class="k">git pull</span>
+<span class="k">git switch -c</span> <span class="s">lab/your-name</span></pre>
+            </div>
+            <div class="note">
+              <span class="note__tag">Convention</span>
+              <span>Branch names start with <strong>lab/</strong> so anyone scanning the
+              branch list can see at a glance what kind of change is coming.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 03 -->
+        <div class="step">
+          <div class="step__graph"><span class="step__node"></span></div>
+          <div class="step__body">
+            <div class="step__n">03</div>
+            <h3 class="step__h">Claim your folder</h3>
+            <p class="step__p">
+              Copy the template into a folder named after you. From here on, everything
+              you build lives inside that folder and nowhere else.
+            </p>
+            <div class="code">
+              <div class="code__bar">
+                <span class="code__label">Terminal</span>
+                <button class="copy" type="button">Copy</button>
+              </div>
+<pre><span class="k">cp -r</span> <span class="s">labs/_template</span> <span class="s">labs/your-name</span></pre>
+            </div>
+            <div class="note">
+              <span class="note__tag">Why</span>
+              <span>One folder per person is what makes merge conflicts almost impossible
+              here. Two people can never collide if they never edit the same file —
+              <strong>so stay inside your folder.</strong></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 04 -->
+        <div class="step">
+          <div class="step__graph"><span class="step__node"></span></div>
+          <div class="step__body">
+            <div class="step__n">04</div>
+            <h3 class="step__h">Open it in a browser</h3>
+            <p class="step__p">
+              Serve the folder locally so links and paths behave the way they will once
+              deployed. Leave this running in its own terminal tab while you work.
+            </p>
+            <div class="code">
+              <div class="code__bar">
+                <span class="code__label">Terminal</span>
+                <button class="copy" type="button">Copy</button>
+              </div>
+<pre><span class="k">python3 -m http.server</span> 8000
+<span class="c"># then visit http://localhost:8000 in your browser</span>
+<span class="c"># stop the server later with Ctrl+C</span></pre>
+            </div>
+          </div>
+        </div>
+
+        <!-- 05 -->
+        <div class="step">
+          <div class="step__graph"><span class="step__node"></span></div>
+          <div class="step__body">
+            <div class="step__n">05</div>
+            <h3 class="step__h">Make it yours</h3>
+            <p class="step__p">
+              Edit <code>labs/your-name/index.html</code> and build whatever you want.
+              Bring your own CSS, images, and scripts — keep them in your folder. This
+              is the part where nobody has notes for you.
+            </p>
+            <div class="note">
+              <span class="note__tag">Off limits</span>
+              <span>Don't edit <strong>assets/site.css</strong>, <strong>index.html</strong>,
+              or anyone else's lab. If you genuinely need a change to a shared file, make
+              it a <strong>separate pull request</strong> and say why — mixing it into your
+              lab PR makes the whole thing slow to review.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 06 -->
+        <div class="step">
+          <div class="step__graph"><span class="step__node"></span></div>
+          <div class="step__body">
+            <div class="step__n">06</div>
+            <h3 class="step__h">Register your lab</h3>
+            <p class="step__p">
+              This is the only shared file you touch. Add one entry to the end of the
+              array in <code>labs/labs.js</code> and your lab appears in the top menu and
+              on the home page at the same time.
+            </p>
+            <div class="code">
+              <div class="code__bar">
+                <span class="code__label">labs/labs.js — diff</span>
+                <button class="copy" type="button">Copy</button>
+              </div>
+<pre><span class="c">// append after the last entry, minding the comma</span>
+<span class="plus">+  ,{</span>
+<span class="plus">+    slug: "your-name",</span>
+<span class="plus">+    name: "Your Name's Lab",</span>
+<span class="plus">+    owner: "Your Name",</span>
+<span class="plus">+    blurb: "One sentence about what you're exploring.",</span>
+<span class="plus">+    branch: "magenta",</span>
+<span class="plus">+    added: "2026-09-01"</span>
+<span class="plus">+  }</span></pre>
+            </div>
+            <div class="note">
+              <span class="note__tag">Careful</span>
+              <span>Add your lines and change nothing else. Don't let your editor
+              reformat the file on save — a tidy-up turns a 7-line diff into a 40-line
+              one and buries the actual change.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 07 -->
+        <div class="step">
+          <div class="step__graph"><span class="step__node"></span></div>
+          <div class="step__body">
+            <div class="step__n">07</div>
+            <h3 class="step__h">Commit in small pieces</h3>
+            <p class="step__p">
+              Read your own changes before you commit them. Two or three focused commits
+              beat one enormous one, because a reviewer can follow your thinking instead
+              of reverse-engineering it.
+            </p>
+            <div class="code">
+              <div class="code__bar">
+                <span class="code__label">Terminal</span>
+                <button class="copy" type="button">Copy</button>
+              </div>
+<pre><span class="k">git status</span>                          <span class="c"># what changed?</span>
+<span class="k">git diff</span>                            <span class="c"># read it before you send it</span>
+
+<span class="k">git add</span> <span class="s">labs/your-name</span>
+<span class="k">git commit -m</span> <span class="s">"Add lab page for Your Name"</span>
+
+<span class="k">git add</span> <span class="s">labs/labs.js</span>
+<span class="k">git commit -m</span> <span class="s">"Register your-name in lab index"</span></pre>
+            </div>
+            <div class="note">
+              <span class="note__tag">Habit</span>
+              <span>Write the message for the person reading the history in six months.
+              <strong>"Add lab page for Ana"</strong> is useful. <strong>"updates"</strong>
+              is not.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 08 -->
+        <div class="step">
+          <div class="step__graph"><span class="step__node"></span></div>
+          <div class="step__body">
+            <div class="step__n">08</div>
+            <h3 class="step__h">Push and open the pull request</h3>
+            <p class="step__p">
+              Pushing uploads your branch. A pull request asks the team to review it and
+              pull it into <code>main</code>. Once it's approved and merged, the site
+              rebuilds and your lab is live.
+            </p>
+            <div class="code">
+              <div class="code__bar">
+                <span class="code__label">Terminal</span>
+                <button class="copy" type="button">Copy</button>
+              </div>
+<pre><span class="k">git push -u origin</span> <span class="s">lab/your-name</span>
+<span class="c"># the terminal prints a link — open it to create the PR</span></pre>
+            </div>
+            <p class="step__p" style="margin-top:16px">
+              In the description, write what you built, what you'd like feedback on, and
+              drop in a screenshot. Then review your own diff in the
+              <strong>Files changed</strong> tab before you request anyone else. You will
+              catch something. Everyone does.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== review ===================== -->
+  <section class="row section reveal" id="review">
+    <div class="row__graph">
+      <span class="node node--merge" data-node style="top: 8px"></span>
+    </div>
+    <div class="row__body">
+      <p class="eyebrow">Merge</p>
+      <h2 class="display section__title">What reviewers check</h2>
+      <p class="lede">
+        Not whether your design is good — that's a critique, and we do those separately.
+        A review asks whether this change is safe and easy to accept. Run this list over
+        your own PR first.
+      </p>
+
+      <ul class="check">
+        <li><span><strong>Everything is inside your folder</strong>, apart from one entry in <code>labs/labs.js</code>.</span></li>
+        <li><span><strong>No unrelated changes.</strong> No reformatted files, no dependency bumps, no drive-by fixes.</span></li>
+        <li><span><strong>Commit messages describe the change</strong> rather than the fact that a change happened.</span></li>
+        <li><span><strong>It works from a fresh clone</strong> — no broken image paths pointing at your desktop.</span></li>
+        <li><span><strong>The PR description says what you built</strong> and includes a screenshot.</span></li>
+        <li><span><strong>You can explain every line.</strong> If you can't, take it out. This is the one that matters.</span></li>
+      </ul>
+
+      <div class="note" style="margin-top:26px">
+        <span class="note__tag">Note</span>
+        <span>Comments on your PR are about the change, not about you. Expect a couple of
+        rounds — that's the system working, not a rejection. <strong>"Good catch, fixed"</strong>
+        is a complete and professional reply.</span>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <div class="shell foot__inner">
+    <span>Design Engineering Guild · Aug–Dec 2026</span>
+    <span><a href="#ship">Ship a lab</a> · <a href="https://github.com/YOUR-ORG/ai-studio-lab">Repository</a></span>
+  </div>
+</footer>
+
+<script src="labs/labs.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/site.js"></script>
+</body>
+</html>

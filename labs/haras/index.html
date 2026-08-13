@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Haras' Lab — AI Studio Lab</title>
+<meta name="description" content="Reference lab for the Design Engineering Guild.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+
+<!-- this lab's branch colour drives every accent on the page -->
+<style>:root { --branch: var(--cyan); }</style>
+
+<script>window.SITE_ROOT = "../../";</script>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar__inner">
+    <a class="brand" href="../../index.html">
+      <span class="brand__dot"></span>
+      <strong>ai-studio-lab</strong>
+      <span>/ lab/haras</span>
+    </a>
+
+    <nav aria-label="Main">
+      <ul class="navlist">
+        <li><a class="navlink" href="../../index.html">Home</a></li>
+        <li class="navgroup">
+          <button class="navlink" data-lab-toggle aria-expanded="false" aria-haspopup="true" aria-controls="lab-panel" aria-current="page">
+            Lab
+            <span class="navlink__caret" aria-hidden="true"></span>
+          </button>
+          <ul class="dropdown" id="lab-panel" data-lab-panel data-lab-menu></ul>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main class="shell spine">
+
+  <section class="row labhead">
+    <div class="row__graph">
+      <span class="node node--lit" style="top: 22px"></span>
+    </div>
+    <div class="row__body">
+      <p class="eyebrow rise" data-d="1">Lab 01 · merged</p>
+      <h1 class="display labhead__name rise" data-d="2">Haras'<br>Lab</h1>
+      <p class="lede rise" data-d="3" style="margin-top:26px">
+        The reference lab. It exists so there's a working example to copy — a page
+        structure, a header, a grid of experiments. Take the skeleton and throw away
+        everything else.
+      </p>
+      <div class="labhead__meta rise" data-d="4">
+        <span class="chip chip--branch">lab/haras</span>
+        <span class="chip">Haras</span>
+        <span class="chip">Added 2026-08-13</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="row section reveal">
+    <div class="row__graph">
+      <span class="node" data-node style="top: 8px"></span>
+    </div>
+    <div class="row__body">
+      <p class="eyebrow">Experiments</p>
+      <h2 class="display section__title">In this lab</h2>
+
+      <div class="work">
+
+        <article class="work__item">
+          <div class="work__canvas" data-swatches>
+            <div class="swatches">
+              <button data-hex="#45E0DC" style="background:#45E0DC" aria-label="Cyan"></button>
+              <button data-hex="#FF5CA8" style="background:#FF5CA8" aria-label="Magenta"></button>
+              <button data-hex="#FFC44D" style="background:#FFC44D" aria-label="Amber"></button>
+              <button data-hex="#A78BFA" style="background:#A78BFA" aria-label="Lilac"></button>
+            </div>
+          </div>
+          <div class="work__n">01 · interactive</div>
+          <h3 class="work__h">Branch colours</h3>
+          <p class="work__p">
+            The four colours a lab can claim. Click one:
+            <span class="mono" data-swatch-out style="color:var(--branch)">#45E0DC</span>
+          </p>
+        </article>
+
+        <article class="work__item">
+          <div class="work__canvas" style="background:
+            repeating-linear-gradient(45deg, var(--surface) 0 9px, var(--surface-2) 9px 18px)">
+          </div>
+          <div class="work__n">02 · static</div>
+          <h3 class="work__h">Placeholder</h3>
+          <p class="work__p">
+            Swap this canvas for a screenshot, an embedded prototype, or anything you
+            can put in a browser.
+          </p>
+        </article>
+
+        <article class="work__item">
+          <div class="work__canvas" style="background:
+            radial-gradient(circle at 32% 30%, var(--cyan) 0, transparent 48%),
+            radial-gradient(circle at 68% 66%, var(--magenta) 0, transparent 48%),
+            var(--void-2)">
+          </div>
+          <div class="work__n">03 · static</div>
+          <h3 class="work__h">Also a placeholder</h3>
+          <p class="work__p">
+            Three cards is a suggestion, not a rule. Add ten, or delete the grid and
+            build something entirely different.
+          </p>
+        </article>
+
+      </div>
+
+      <a class="backlink" href="../../index.html">← Back to all labs</a>
+    </div>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <div class="shell foot__inner">
+    <span>lab/haras · merged 2026-08-13</span>
+    <span><a href="../../index.html#ship">Ship your own lab</a></span>
+  </div>
+</footer>
+
+<script src="../labs.js"></script>
+<script src="../../assets/nav.js"></script>
+<script src="../../assets/site.js"></script>
+</body>
+</html>
