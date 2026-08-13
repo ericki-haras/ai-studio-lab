@@ -1,6 +1,6 @@
 # AI Studio Lab
 
-A working repo for the Design Engineering Guild. Every designer gets a folder, builds
+A working repo for the AI Studio Brazil. Every designer gets a folder, builds
 whatever they want in it, and ships it to the live site through a pull request.
 
 The work is yours. The workflow is the lesson.
