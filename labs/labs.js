@@ -26,6 +26,14 @@ window.LABS = [
     blurb: "Reference lab. Copy this structure, then make it unrecognisable.",
     branch: "cyan",
     added: "2026-08-13"
+  },
+  {
+    slug: "johnny",
+    name: "Johnny's Lab",
+    owner: "Johnny",
+    blurb: "A fun designer who likes memes.",
+    branch: "amber",
+    added: "2026-08-19"
   }
 
   // ↓ your entry goes here. Copy the block above, keep the comma placement right.
