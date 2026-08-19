@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/site.css">
+<link rel="stylesheet" href="assets/site.css?v=3">
 <script>window.SITE_ROOT = "";</script>
 </head>
 <body>
@@ -107,14 +107,24 @@
       <span class="node" data-node style="top: 8px"></span>
     </div>
     <div class="row__body">
-      <p class="eyebrow">The workflow</p>
-      <h2 class="display section__title">Eight steps to live</h2>
+      <div class="section__head">
+        <div>
+          <p class="eyebrow">The workflow</p>
+          <h2 class="display section__title">Eight steps to live</h2>
+        </div>
+        <button class="btn workflow-toggle" type="button" data-workflow-toggle aria-expanded="false" aria-controls="workflow-panel">
+          <span data-workflow-toggle-label>Show steps</span>
+          <span class="navlink__caret" aria-hidden="true"></span>
+        </button>
+      </div>
       <p class="lede">
         Read the whole thing once before you start typing. Anywhere you see
         <code style="font-family:var(--mono);font-size:.86em;background:var(--surface);border:1px solid var(--wire-dim);border-radius:3px;padding:1px 5px">your-name</code>,
         swap in your own — lowercase, hyphens instead of spaces.
       </p>
 
+      <div class="workflow-collapse" id="workflow-panel" data-workflow-panel data-open="false">
+      <div class="workflow-collapse__inner">
       <div class="steps">
 
         <!-- 01 -->
@@ -122,7 +132,7 @@
           <div class="step__graph"><span class="step__node"></span></div>
           <div class="step__body">
             <div class="step__n">01</div>
-            <h3 class="step__h">Get the repo onto your machine</h3>
+            <h3 class="step__h">Clone the repo to your machine</h3>
             <p class="step__p">
               Cloning downloads the whole project plus its entire history. You only
               ever do this once per machine.
@@ -197,7 +207,7 @@
           <div class="step__graph"><span class="step__node"></span></div>
           <div class="step__body">
             <div class="step__n">04</div>
-            <h3 class="step__h">Open it in a browser</h3>
+            <h3 class="step__h">Open it in a browser (Localhost)</h3>
             <p class="step__p">
               Serve the folder locally so links and paths behave the way they will once
               deployed. Leave this running in its own terminal tab while you work.
@@ -219,7 +229,7 @@
           <div class="step__graph"><span class="step__node"></span></div>
           <div class="step__body">
             <div class="step__n">05</div>
-            <h3 class="step__h">Make it yours</h3>
+            <h3 class="step__h">Build</h3>
             <p class="step__p">
               Edit <code>labs/your-name/index.html</code> and build whatever you want.
               Bring your own CSS, images, and scripts — keep them in your folder. This
@@ -333,6 +343,8 @@
         </div>
 
       </div>
+      </div>
+      </div>
     </div>
   </section>
 
@@ -379,6 +391,6 @@
 
 <script src="labs/labs.js"></script>
 <script src="assets/nav.js"></script>
-<script src="assets/site.js"></script>
+<script src="assets/site.js?v=3"></script>
 </body>
 </html>
