@@ -34,6 +34,14 @@ window.LABS = [
     blurb: "A fun designer who likes memes.",
     branch: "amber",
     added: "2026-08-19"
+  },
+  {
+    slug: "pedro",
+    name: "Pedro's Lab",
+    owner: "Pedro",
+    blurb: "Learning the branch, PR, and review loop by doing it.",
+    branch: "lilac",
+    added: "2026-08-19"
   }
 
   // ↓ your entry goes here. Copy the block above, keep the comma placement right.
