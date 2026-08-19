@@ -69,6 +69,28 @@
     });
   });
 
+  /* --- collapsible workflow section --------------------------------------- */
+  var workflowToggle = document.querySelector("[data-workflow-toggle]");
+  var workflowPanel = document.querySelector("[data-workflow-panel]");
+  var workflowLabel = document.querySelector("[data-workflow-toggle-label]");
+
+  if (workflowToggle && workflowPanel) {
+    workflowToggle.addEventListener("click", function () {
+      var open = workflowToggle.getAttribute("aria-expanded") !== "true";
+      workflowToggle.setAttribute("aria-expanded", String(open));
+      workflowPanel.setAttribute("data-open", String(open));
+      if (workflowLabel) workflowLabel.textContent = open ? "Hide steps" : "Show steps";
+
+      // steps collapsed at zero height never cross the IntersectionObserver's
+      // threshold, so force their reveal animation the first time they open
+      if (open) {
+        workflowPanel.querySelectorAll(".step").forEach(function (el) {
+          el.classList.add("is-seen");
+        });
+      }
+    });
+  }
+
   /* --- token swatch demo (Haras' Lab) ------------------------------------ */
   document.querySelectorAll("[data-swatches] button").forEach(function (sw) {
     sw.addEventListener("click", function () {

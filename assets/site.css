@@ -462,6 +462,28 @@ a { color: var(--branch); text-decoration: none; }
   margin-bottom: 18px;
 }
 
+/* --- collapsible section head (workflow) -------------------------------- */
+.section__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.workflow-toggle { flex: none; }
+.workflow-toggle[aria-expanded="true"] .navlink__caret { transform: rotate(-135deg) translateY(-1px); }
+
+.workflow-collapse {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows .38s cubic-bezier(.4,0,.2,1);
+}
+
+.workflow-collapse[data-open="true"] { grid-template-rows: 1fr; }
+
+.workflow-collapse__inner { overflow: hidden; min-height: 0; }
+
 /* --- lab cards ---------------------------------------------------------- */
 .labgrid {
   display: grid;
