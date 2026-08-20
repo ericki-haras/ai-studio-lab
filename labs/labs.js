@@ -42,6 +42,14 @@ window.LABS = [
     blurb: "Learning the branch, PR, and review loop by doing it.",
     branch: "lilac",
     added: "2026-08-19"
+  },
+  {
+    slug: "guilherme-ferreira",
+    name: "Guilherme's Lab",
+    owner: "Guilherme Ferreira",
+    blurb: "Two small tools that make a pull request easier to review.",
+    branch: "magenta",
+    added: "2026-08-20"
   }
 
   // ↓ your entry goes here. Copy the block above, keep the comma placement right.
