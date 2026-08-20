@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guilherme Ferreira's Lab — AI Studio Lab</title>
+<meta name="description" content="Two small tools that make a pull request easier to review.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+
+<!-- this lab's branch colour drives every accent on the page -->
+<style>:root { --branch: var(--magenta); }</style>
+<link rel="stylesheet" href="styles.css">
+
+<script>window.SITE_ROOT = "../../";</script>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar__inner">
+    <a class="brand" href="../../index.html">
+      <span class="brand__dot"></span>
+      <strong>ai-studio-lab</strong>
+      <span>/ lab/guilherme-ferreira</span>
+    </a>
+
+    <nav aria-label="Main">
+      <ul class="navlist">
+        <li><a class="navlink" href="../../index.html">Home</a></li>
+        <li class="navgroup">
+          <button class="navlink" data-lab-toggle aria-expanded="false" aria-haspopup="true" aria-controls="lab-panel" aria-current="page">
+            Lab
+            <span class="navlink__caret" aria-hidden="true"></span>
+          </button>
+          <ul class="dropdown" id="lab-panel" data-lab-panel data-lab-menu></ul>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main class="shell spine">
+
+  <section class="row labhead">
+    <div class="row__graph">
+      <span class="node node--lit" style="top: 22px"></span>
+    </div>
+    <div class="row__body">
+      <p class="eyebrow rise" data-d="1">Lab · in review</p>
+      <h1 class="display labhead__name rise" data-d="2">Guilherme<br>Ferreira</h1>
+      <p class="lede rise" data-d="3" style="margin-top:26px">
+        CONTRIBUTING.md asks for two habits that are easy to agree with and easy to
+        forget: commit messages that describe the change, and diffs small enough to
+        read. This lab turns both into something you can poke at — type a message and
+        watch it pass or fail, then see what a format-on-save does to a seven-line
+        change.
+      </p>
+      <div class="labhead__meta rise" data-d="4">
+        <span class="chip chip--branch">lab/guilherme-ferreira</span>
+        <span class="chip">Guilherme Ferreira</span>
+        <span class="chip">Added 2026-08-20</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       01 — commit message linter
+       ===================================================================== -->
+  <section class="row section reveal">
+    <div class="row__graph">
+      <span class="node" data-node style="top: 8px"></span>
+    </div>
+    <div class="row__body">
+      <p class="eyebrow">01 · interactive</p>
+      <h2 class="display section__title">Commit message linter</h2>
+      <p class="step__p">
+        Six checks, all of them lifted straight from the Commits section of
+        CONTRIBUTING.md. Nothing is sent anywhere — the rules run in
+        <span class="mono">lab.js</span> next to this page.
+      </p>
+
+      <div class="gf-panel">
+        <div class="gf-panel__head">
+          <label class="gf-label" for="gf-msg">Commit message</label>
+          <div class="gf-presets">
+            <button class="gf-preset" type="button" data-gf-preset="updates">updates</button>
+            <button class="gf-preset" type="button" data-gf-preset="Added a new lab page for Guilherme and also fixed the nav.">verbose</button>
+            <button class="gf-preset" type="button" data-gf-preset="Add lab page for Guilherme&#10;&#10;Two demos: a commit linter and a diff-size toggle.">good</button>
+          </div>
+        </div>
+
+        <textarea id="gf-msg" class="gf-input mono" rows="5" spellcheck="false" data-gf-input>updates</textarea>
+
+        <ul class="gf-rules" data-gf-rules></ul>
+
+        <p class="gf-score" data-gf-score aria-live="polite"></p>
+      </div>
+
+      <div class="note">
+        <span class="note__tag">Why</span>
+        <span>
+          A reviewer reads the subject line before anything else. <strong>"Add lab page
+          for Ana"</strong> tells them what to expect; <strong>"updates"</strong> makes
+          them open the diff to find out. Same work, different cost to everyone else.
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       02 — diff size toggle
+       ===================================================================== -->
+  <section class="row section reveal">
+    <div class="row__graph">
+      <span class="node" data-node style="top: 8px"></span>
+    </div>
+    <div class="row__body">
+      <p class="eyebrow">02 · interactive</p>
+      <h2 class="display section__title">What format-on-save costs</h2>
+      <p class="step__p">
+        The same registry entry, twice. On the left the change you meant; on the right
+        the same change after an editor reformatted the whole file on the way out. The
+        counter below reads the lines actually rendered in the block.
+      </p>
+
+      <div class="code gf-code">
+        <div class="code__bar">
+          <span class="code__label" data-gf-diff-label>labs/labs.js — your change</span>
+          <button class="gf-preset" type="button" aria-pressed="false" data-gf-toggle>Reformat on save</button>
+        </div>
+
+        <pre data-gf-diff="clean"><span class="c">  },</span>
+<span class="c">  {</span>
+<span class="c">    slug: "pedro",</span>
+<span class="c">    ...</span>
+<span class="c">  }</span>
+<span class="plus">+ ,{</span>
+<span class="plus">+   slug: "guilherme-ferreira",</span>
+<span class="plus">+   name: "Guilherme's Lab",</span>
+<span class="plus">+   owner: "Guilherme Ferreira",</span>
+<span class="plus">+   blurb: "Two small tools for easier reviews.",</span>
+<span class="plus">+   branch: "magenta",</span>
+<span class="plus">+   added: "2026-08-20"</span>
+<span class="plus">+ }</span>
+<span class="c">];</span></pre>
+
+        <pre data-gf-diff="noisy" hidden><span class="minus">- window.LABS = [</span>
+<span class="plus">+ window.LABS = [{</span>
+<span class="minus">-   {</span>
+<span class="minus">-     slug: "haras",</span>
+<span class="plus">+   slug: 'haras',</span>
+<span class="minus">-     name: "Haras' Lab",</span>
+<span class="plus">+   name: "Haras' Lab",</span>
+<span class="minus">-     owner: "Haras",</span>
+<span class="plus">+   owner: 'Haras',</span>
+<span class="minus">-     branch: "cyan",</span>
+<span class="plus">+   branch: 'cyan',</span>
+<span class="minus">-     added: "2026-08-13"</span>
+<span class="plus">+   added: '2026-08-13'</span>
+<span class="minus">-   },</span>
+<span class="plus">+ }, {</span>
+<span class="minus">-     slug: "johnny",</span>
+<span class="plus">+   slug: 'johnny',</span>
+<span class="minus">-     owner: "Johnny",</span>
+<span class="plus">+   owner: 'Johnny',</span>
+<span class="minus">-     branch: "amber",</span>
+<span class="plus">+   branch: 'amber',</span>
+<span class="minus">-   },</span>
+<span class="plus">+ }, {</span>
+<span class="minus">-     slug: "pedro",</span>
+<span class="plus">+   slug: 'pedro',</span>
+<span class="minus">-     owner: "Pedro",</span>
+<span class="plus">+   owner: 'Pedro',</span>
+<span class="minus">-     branch: "lilac",</span>
+<span class="plus">+   branch: 'lilac',</span>
+<span class="plus">+ }, {</span>
+<span class="plus">+   slug: 'guilherme-ferreira',</span>
+<span class="plus">+   owner: 'Guilherme Ferreira',</span>
+<span class="plus">+   branch: 'magenta',</span>
+<span class="plus">+   added: '2026-08-20'</span>
+<span class="minus">-   }</span>
+<span class="plus">+ }];</span>
+<span class="c">  // ...and every remaining line, re-indented</span></pre>
+      </div>
+
+      <div class="gf-meter">
+        <div class="gf-meter__stat">
+          <span class="gf-meter__n" data-gf-count>0</span>
+          <span class="stat__l">changed lines</span>
+        </div>
+        <div class="gf-meter__stat">
+          <span class="gf-meter__n" data-gf-real>0</span>
+          <span class="stat__l">lines you meant</span>
+        </div>
+        <p class="gf-meter__verdict" data-gf-verdict aria-live="polite"></p>
+      </div>
+
+      <a class="backlink" href="../../index.html">← Back to all labs</a>
+    </div>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <div class="shell foot__inner">
+    <span>lab/guilherme-ferreira · in review</span>
+    <span><a href="../../index.html#ship">Workflow</a></span>
+  </div>
+</footer>
+
+<script src="../labs.js"></script>
+<script src="../../assets/nav.js"></script>
+<script src="../../assets/site.js"></script>
+<script src="lab.js"></script>
+</body>
+</html>
