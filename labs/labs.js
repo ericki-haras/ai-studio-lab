@@ -26,6 +26,14 @@ window.LABS = [
     blurb: "Reference lab. Copy this structure, then make it unrecognisable.",
     branch: "cyan",
     added: "2026-08-13"
+  },
+  {
+    slug: "guilherme-ferreira",
+    name: "Guilherme's Lab",
+    owner: "Guilherme Ferreira",
+    blurb: "Two small tools that make a pull request easier to review.",
+    branch: "magenta",
+    added: "2026-08-20"
   }
 
   // ↓ your entry goes here. Copy the block above, keep the comma placement right.
