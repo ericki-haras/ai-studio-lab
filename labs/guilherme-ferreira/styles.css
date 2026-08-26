@@ -1,0 +1,160 @@
+/* ==========================================================================
+   lab/guilherme-ferreira — page-local styles
+   --------------------------------------------------------------------------
+   Every class here is prefixed gf- so nothing can collide with site.css or
+   with another lab. Colours come from the shared tokens; --branch is magenta
+   for this page, set in index.html.
+   ========================================================================== */
+
+/* --- linter panel -------------------------------------------------------- */
+.gf-panel {
+  margin-top: 28px;
+  padding: 18px;
+  background: var(--void-2);
+  border: 1px solid var(--wire-dim);
+  border-radius: 9px;
+}
+
+.gf-panel__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.gf-label {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: var(--paper-faint);
+}
+
+.gf-presets { display: flex; flex-wrap: wrap; gap: 6px; }
+
+.gf-preset {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  padding: 5px 10px;
+  border-radius: 4px;
+  border: 1px solid var(--wire);
+  background: none;
+  color: var(--paper-dim);
+  cursor: pointer;
+  transition: color .16s ease, border-color .16s ease;
+}
+
+.gf-preset:hover { color: var(--paper); border-color: var(--branch); }
+
+.gf-input {
+  display: block;
+  width: 100%;
+  padding: 13px 14px;
+  background: var(--void);
+  border: 1px solid var(--wire);
+  border-radius: 7px;
+  color: var(--paper);
+  font-size: 13.5px;
+  line-height: 1.7;
+  resize: vertical;
+}
+
+.gf-input:focus { outline: none; border-color: var(--branch); }
+
+/* --- rule list ----------------------------------------------------------- */
+.gf-rules {
+  list-style: none;
+  margin: 16px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 2px;
+}
+
+.gf-rule {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 11px 13px;
+  background: var(--surface);
+  border: 1px solid var(--wire-dim);
+  font-size: 13.5px;
+  color: var(--paper-dim);
+}
+
+.gf-rule:first-child { border-radius: 7px 7px 0 0; }
+.gf-rule:last-child { border-radius: 0 0 7px 7px; }
+
+/* the status glyph doubles as the pass/fail colour */
+.gf-rule__mark {
+  flex: none;
+  width: 16px;
+  font-family: var(--mono);
+  font-size: 13px;
+  line-height: 1.6;
+  text-align: center;
+}
+
+.gf-rule--pass .gf-rule__mark { color: var(--ok); }
+.gf-rule--fail .gf-rule__mark { color: var(--del); }
+.gf-rule--pass { color: var(--paper); }
+
+.gf-rule__hint {
+  display: block;
+  margin-top: 3px;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  color: var(--paper-faint);
+}
+
+.gf-score {
+  margin: 14px 0 0;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--paper-faint);
+}
+
+.gf-score strong { color: var(--branch); font-weight: 500; }
+
+/* --- diff block + meter -------------------------------------------------- */
+.gf-code { margin-top: 28px; }
+
+.gf-code pre { max-height: 340px; }
+
+.gf-meter {
+  display: flex;
+  align-items: center;
+  gap: 34px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1px solid var(--wire-dim);
+}
+
+.gf-meter__n {
+  display: block;
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 30px;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  color: var(--branch);
+}
+
+.gf-meter__verdict {
+  margin: 0;
+  font-size: 14px;
+  color: var(--paper-dim);
+  max-width: 42ch;
+}
+
+.gf-meter__verdict strong { color: var(--paper); font-weight: 600; }
+
+@media (max-width: 720px) {
+  .gf-meter { gap: 22px; }
+}
