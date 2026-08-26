@@ -27,6 +27,14 @@ window.LABS = [
     branch: "cyan",
     added: "2026-08-13"
   }
+  ,{
+    slug: "alicenasci",
+    name: "Alice Lab",
+    owner: "Alice",
+    blurb: "Exploring AI-assisted design workflows and interface ideas.",
+    branch: "lilac",
+    added: "2026-08-26"
+  }
 
   ,{
     slug: "isa-masi",
