@@ -34,13 +34,24 @@ window.LABS = [
     blurb: "Learning the branch, PR, and review loop by doing it.",
     branch: "lilac",
     added: "2026-08-26"
-  }
-  ,{
+  },
+  {
+    slug: "lu",
+    name: "Lu's Lab",
+    owner: "Lu",
+    blurb: "A space to experiment and learn by building.",
+    branch: "lilac",
+    added: "2026-08-26"
+  },
+  {
     slug: "isinha",
     name: "Isinha's Lab",
     owner: "Isinha",
     blurb: "A lab still finding its shape — check back soon.",
-    branch: "amber"},{
+    branch: "amber",
+    added: "2026-08-26"
+  },
+  {
     slug: "alicenasci",
     name: "Alice Lab",
     owner: "Alice",
@@ -48,7 +59,6 @@ window.LABS = [
     branch: "lilac",
     added: "2026-08-26"
   }
-
   ,{
     slug: "isa-masi",
     name: "Isa Masi's Lab",
