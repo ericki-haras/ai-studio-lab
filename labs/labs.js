@@ -34,6 +34,42 @@ window.LABS = [
     blurb: "Two small tools that make a pull request easier to review.",
     branch: "magenta",
     added: "2026-08-20"
+    slug: "pedro",
+    name: "Pedro's Lab",
+    owner: "Pedro",
+    blurb: "Learning the branch, PR, and review loop by doing it.",
+    branch: "lilac",
+    added: "2026-08-26"
+  }
+  ,{
+    slug: "isinha",
+    name: "Isinha's Lab",
+    owner: "Isinha",
+    blurb: "A lab still finding its shape — check back soon.",
+    branch: "amber",
+    slug: "alicenasci",
+    name: "Alice Lab",
+    owner: "Alice",
+    blurb: "Exploring AI-assisted design workflows and interface ideas.",
+    branch: "lilac",
+    added: "2026-08-26"
+  }
+
+  ,{
+    slug: "isa-masi",
+    name: "Isa Masi's Lab",
+    owner: "Isa Masi",
+    blurb: "One sentence about what you're exploring.",
+    branch: "magenta",
+    added: "2026-08-26"
+  }
+  ,{
+    slug: "vicolla",
+    name: "O Melhor Lab",
+    owner: "vicolla",
+    blurb: "O lab da vicolla. Ainda em construção, mas já competindo pelo título.",
+    branch: "magenta",
+    added: "2026-08-26"
   }
 
   // ↓ your entry goes here. Copy the block above, keep the comma placement right.
@@ -45,4 +81,12 @@ window.LABS = [
   //   branch: "magenta",
   //   added: "2026-09-01"
   // }
+  ,{
+    slug: "rafas-lab",
+    name: "Rafaela's Lab",
+    owner: "Rafaela",
+    blurb: "A tarot draw — 78 cards, each with its own three-sentence fortune.",
+    branch: "lilac",
+    added: "2026-08-26"
+  }
 ];

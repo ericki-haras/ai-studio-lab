@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Rafaela's Lab — AI Studio Lab</title>
+<meta name="description" content="A tarot draw with 78 unique fortunes, one card at a time.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+
+<style>
+  :root {
+    --branch: var(--lilac);
+    --void: #05050a;
+    --void-2: #0b0b16;
+  }
+
+  /* night sky — layered on top of the shared plotter grid, this page only */
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-image:
+      radial-gradient(1.6px 1.6px at 12% 22%, rgba(255,255,255,.95) 0, transparent 60%),
+      radial-gradient(1.2px 1.2px at 78% 8%,  rgba(255,255,255,.8)  0, transparent 60%),
+      radial-gradient(1.8px 1.8px at 45% 62%, rgba(255,255,255,.9)  0, transparent 60%),
+      radial-gradient(1px   1px   at 92% 48%, rgba(255,255,255,.65) 0, transparent 60%),
+      radial-gradient(1.4px 1.4px at 25% 85%, rgba(255,255,255,.85) 0, transparent 60%),
+      radial-gradient(1px   1px   at 60% 30%, rgba(255,255,255,.6)  0, transparent 60%),
+      radial-gradient(1.6px 1.6px at 8%  70%, rgba(255,255,255,.9)  0, transparent 60%),
+      radial-gradient(1.2px 1.2px at 68% 90%, rgba(255,255,255,.7)  0, transparent 60%),
+      radial-gradient(2px   2px   at 35% 15%, rgba(255,255,255,.55) 0, transparent 60%),
+      radial-gradient(1px   1px   at 88% 75%, rgba(255,255,255,.75) 0, transparent 60%),
+      radial-gradient(1.5px 1.5px at 52% 5%,  rgba(255,255,255,.8)  0, transparent 60%),
+      radial-gradient(1px   1px   at 15% 45%, rgba(255,255,255,.6)  0, transparent 60%),
+      radial-gradient(1.3px 1.3px at 5%  95%, rgba(255,255,255,.7)  0, transparent 60%),
+      radial-gradient(1px   1px   at 72% 55%, rgba(255,255,255,.55) 0, transparent 60%);
+    background-repeat: repeat;
+    background-size: 340px 340px;
+    animation: twinkle 6s ease-in-out infinite alternate;
+  }
+
+  @keyframes twinkle {
+    from { opacity: .65; }
+    to   { opacity: 1; }
+  }
+
+  .tarot {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 40px;
+    align-items: center;
+    margin-top: 34px;
+  }
+
+  .tarot__stage {
+    perspective: 1400px;
+    width: 240px;
+    height: 380px;
+    margin: 0 auto;
+  }
+
+  .tarot__card {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transition: transform .7s cubic-bezier(.4,0,.2,1);
+  }
+
+  .tarot__face {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+    border-radius: 12px;
+    border: 1px solid var(--wire);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 20px;
+    overflow: hidden;
+  }
+
+  .tarot__face--front {
+    background:
+      repeating-linear-gradient(45deg, var(--surface) 0 10px, var(--surface-2) 10px 20px);
+    box-shadow: inset 0 0 0 6px var(--void-2);
+  }
+
+  .tarot__face--front::before {
+    content: "✦";
+    font-size: 40px;
+    color: var(--branch);
+    opacity: .85;
+  }
+
+  .tarot__face--front .tarot__label {
+    margin-top: 14px;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--paper-faint);
+  }
+
+  .tarot__face--back {
+    background: var(--void-2);
+    transform: rotateY(180deg);
+    gap: 10px;
+  }
+
+  .tarot__tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--branch);
+  }
+
+  .tarot__symbol { font-size: 46px; line-height: 1; }
+
+  .tarot__name {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 19px;
+    letter-spacing: -0.01em;
+    text-transform: none;
+    margin: 0;
+  }
+
+  .tarot__actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .tarot__text {
+    margin: 0;
+    color: var(--paper-dim);
+    font-size: 15px;
+    max-width: 46ch;
+    min-height: 76px;
+  }
+
+  .tarot__hint {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    color: var(--paper-faint);
+  }
+
+  @media (max-width: 720px) {
+    .tarot { grid-template-columns: 1fr; }
+  }
+</style>
+
+<script>window.SITE_ROOT = "../../";</script>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar__inner">
+    <a class="brand" href="../../index.html">
+      <span class="brand__dot"></span>
+      <strong>ai-studio-lab</strong>
+      <span>/ lab/rafas-lab</span>
+    </a>
+
+    <nav aria-label="Main">
+      <ul class="navlist">
+        <li><a class="navlink" href="../../index.html">Home</a></li>
+        <li class="navgroup">
+          <button class="navlink" data-lab-toggle aria-expanded="false" aria-haspopup="true" aria-controls="lab-panel" aria-current="page">
+            Lab
+            <span class="navlink__caret" aria-hidden="true"></span>
+          </button>
+          <ul class="dropdown" id="lab-panel" data-lab-panel data-lab-menu></ul>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main class="shell spine">
+
+  <section class="row labhead">
+    <div class="row__graph">
+      <span class="node node--lit" style="top: 22px"></span>
+    </div>
+    <div class="row__body">
+      <p class="eyebrow rise" data-d="1">Lab · in review</p>
+      <h1 class="display labhead__name rise" data-d="2">Rafaela's<br>Lab</h1>
+      <p class="lede rise" data-d="3" style="margin-top:26px">
+        Uma carta virada para baixo, um clique, e uma leitura só sua. Este experimento reúne
+        as 78 cartas do tarot — 22 arcanos maiores e 56 arcanos menores — cada uma com sua
+        própria previsão de três frases, para nunca tirar a mesma sorte duas vezes.
+      </p>
+      <div class="labhead__meta rise" data-d="4">
+        <span class="chip chip--branch">lab/rafas-lab</span>
+        <span class="chip">Rafaela</span>
+        <span class="chip">Added 2026-08-26</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="row section reveal">
+    <div class="row__graph">
+      <span class="node" data-node style="top: 8px"></span>
+    </div>
+    <div class="row__body">
+      <p class="eyebrow">Experiments</p>
+      <h2 class="display section__title">In this lab</h2>
+
+      <div class="tarot">
+        <div class="tarot__stage">
+          <div class="tarot__card" data-tarot-card>
+            <div class="tarot__face tarot__face--front">
+              <span class="tarot__label">AI Studio Tarot</span>
+            </div>
+            <div class="tarot__face tarot__face--back">
+              <span class="tarot__tag" data-tarot-tag></span>
+              <span class="tarot__symbol" data-tarot-symbol aria-hidden="true"></span>
+              <h3 class="tarot__name" data-tarot-name></h3>
+            </div>
+          </div>
+        </div>
+
+        <div class="tarot__actions">
+          <p class="tarot__text" data-tarot-text>
+            Uma carta, um clique, uma previsão diferente a cada vez. 78 cartas, 78 caminhos.
+          </p>
+          <button class="btn btn--primary" type="button" data-tarot-draw>Tirar minha sorte</button>
+          <p class="tarot__hint" data-tarot-hint>Ainda não revelada</p>
+          <p class="tarot__hint" data-tarot-live aria-live="polite" style="position:absolute;left:-9999px"></p>
+        </div>
+      </div>
+
+      <a class="backlink" href="../../index.html">← Back to all labs</a>
+    </div>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <div class="shell foot__inner">
+    <span>lab/rafas-lab</span>
+    <span><a href="../../index.html#ship">Workflow</a></span>
+  </div>
+</footer>
+
+<script src="../labs.js"></script>
+<script src="../../assets/nav.js"></script>
+<script src="../../assets/site.js"></script>
+<script src="tarot.js"></script>
+</body>
+</html>
