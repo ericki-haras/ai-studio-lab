@@ -27,6 +27,14 @@ window.LABS = [
     branch: "cyan",
     added: "2026-08-13"
   }
+  ,{
+    slug: "lu",
+    name: "Lu's Lab",
+    owner: "Lu",
+    blurb: "A space to experiment and learn by building.",
+    branch: "magenta",
+    added: "2026-08-26"
+  }
 
   // ↓ your entry goes here. Copy the block above, keep the comma placement right.
   // ,{
