@@ -62,4 +62,12 @@ window.LABS = [
   //   branch: "magenta",
   //   added: "2026-09-01"
   // }
+  ,{
+    slug: "rafas-lab",
+    name: "Rafaela's Lab",
+    owner: "Rafaela",
+    blurb: "A tarot draw — 78 cards, each with its own three-sentence fortune.",
+    branch: "lilac",
+    added: "2026-08-26"
+  }
 ];
