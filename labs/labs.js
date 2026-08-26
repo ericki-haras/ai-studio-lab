@@ -27,6 +27,14 @@ window.LABS = [
     branch: "cyan",
     added: "2026-08-13"
   }
+  ,{
+    slug: "vicolla",
+    name: "O Melhor Lab",
+    owner: "vicolla",
+    blurb: "O lab da vicolla. Ainda em construção, mas já competindo pelo título.",
+    branch: "magenta",
+    added: "2026-08-26"
+  }
 
   // ↓ your entry goes here. Copy the block above, keep the comma placement right.
   // ,{
