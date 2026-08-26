@@ -36,6 +36,11 @@ window.LABS = [
     added: "2026-08-26"
   }
   ,{
+    slug: "isinha",
+    name: "Isinha's Lab",
+    owner: "Isinha",
+    blurb: "A lab still finding its shape — check back soon.",
+    branch: "amber",
     slug: "alicenasci",
     name: "Alice Lab",
     owner: "Alice",
