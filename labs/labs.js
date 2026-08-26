@@ -32,6 +32,19 @@ window.LABS = [
     name: "Lu's Lab",
     owner: "Lu",
     blurb: "A space to experiment and learn by building.",
+    slug: "alicenasci",
+    name: "Alice Lab",
+    owner: "Alice",
+    blurb: "Exploring AI-assisted design workflows and interface ideas.",
+    branch: "lilac",
+    added: "2026-08-26"
+  }
+
+  ,{
+    slug: "isa-masi",
+    name: "Isa Masi's Lab",
+    owner: "Isa Masi",
+    blurb: "One sentence about what you're exploring.",
     branch: "magenta",
     added: "2026-08-26"
   }
