@@ -16,10 +16,17 @@
 <!-- TODO 2 — pick your branch colour: cyan, magenta, amber, or lilac.
      Use the same one you put in labs/labs.js. -->
 <style>
-  :root { --branch: var(--magenta); }
+  :root {
+    --branch: var(--magenta);
+    /* text colour across the page matches the cards' background blue */
+    --paper: var(--void-2);
+    --paper-dim: var(--void-2);
+    --paper-faint: var(--void-2);
+  }
 
   /* Your own CSS goes here, or in a styles.css next to this file.
      Either way, keep it inside your folder. */
+  body { background: #FF5CA8; }
 </style>
 
 <script>window.SITE_ROOT = "../../";</script>
