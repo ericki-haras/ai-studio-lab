@@ -37,4 +37,12 @@ window.LABS = [
   //   branch: "magenta",
   //   added: "2026-09-01"
   // }
+  ,{
+    slug: "erick",
+    name: "Erick's Lab",
+    owner: "Erick",
+    blurb: "Learning the repo's ship workflow, one lab at a time.",
+    branch: "amber",
+    added: "2026-08-26"
+  }
 ];
