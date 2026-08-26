@@ -40,7 +40,7 @@ window.LABS = [
     name: "Isinha's Lab",
     owner: "Isinha",
     blurb: "A lab still finding its shape — check back soon.",
-    branch: "amber",
+    branch: "amber"},{
     slug: "alicenasci",
     name: "Alice Lab",
     owner: "Alice",
