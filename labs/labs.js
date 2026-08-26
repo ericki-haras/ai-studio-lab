@@ -26,6 +26,14 @@ window.LABS = [
     blurb: "Reference lab. Copy this structure, then make it unrecognisable.",
     branch: "cyan",
     added: "2026-08-13"
+  },
+  {
+    slug: "pedro",
+    name: "Pedro's Lab",
+    owner: "Pedro",
+    blurb: "Learning the branch, PR, and review loop by doing it.",
+    branch: "lilac",
+    added: "2026-08-26"
   }
   ,{
     slug: "alicenasci",
