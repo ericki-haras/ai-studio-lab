@@ -3,6 +3,17 @@
    Lives entirely in labs/analuluiza/ — reuses tokens from ../../assets/site.css.
    ========================================================================== */
 
+/* --- ambient background: swap the plotter grid for a faint road map ------- */
+/* page-scoped override of assets/site.css's body::before — only in effect
+   here, since portugal.css is only linked from this page. */
+body::before {
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='280' height='280'%3E%3Cpath d='M-10 50 Q60 10 130 55 T290 35' stroke='%233E7A5C' stroke-width='1.8' fill='none' stroke-dasharray='6 5'/%3E%3Cpath d='M-10 160 Q80 195 150 150 T290 185' stroke='%23B0473F' stroke-width='1.8' fill='none' stroke-dasharray='6 5'/%3E%3Cpath d='M40 -10 Q65 90 25 170 T55 290' stroke='%233E7A5C' stroke-width='1.8' fill='none' stroke-dasharray='5 4'/%3E%3Cpath d='M210 -10 Q180 100 225 190 T195 290' stroke='%23B0473F' stroke-width='1.8' fill='none' stroke-dasharray='5 4'/%3E%3Ccircle cx='128' cy='54' r='4' fill='%23B0473F'/%3E%3Ccircle cx='222' cy='150' r='4' fill='%233E7A5C'/%3E%3Ccircle cx='45' cy='185' r='4' fill='%23B0473F'/%3E%3C/svg%3E");
+  background-size: 280px 280px;
+  background-position: 0 0;
+  opacity: 0.5;
+}
+
 /* --- fado player (compact, header) ----------------------------------------- */
 .fado {
   display: flex;
@@ -171,6 +182,30 @@
 .triproute__stop:hover .triproute__label,
 .triproute__stop:focus-visible .triproute__label {
   color: var(--paper);
+}
+
+/* a car drives the length of the line, left to right, on a loop */
+.triproute__car {
+  position: absolute;
+  z-index: 2;
+  top: 7px;
+  left: 0;
+  font-size: 15px;
+  line-height: 1;
+  transform: translateY(-50%) scaleX(-1);
+  pointer-events: none;
+  animation: triproute-drive 7s ease-in-out infinite;
+}
+
+@keyframes triproute-drive {
+  0%   { left: 0%; opacity: 0; }
+  6%   { opacity: 1; }
+  92%  { opacity: 1; }
+  100% { left: calc(100% - 16px); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .triproute__car { display: none; }
 }
 
 /* --- album cover ----------------------------------------------------------- */
