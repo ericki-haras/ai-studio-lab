@@ -154,7 +154,7 @@
       <p class="puzzle-status" id="puzzle-status" aria-live="polite">Loading your permanent image...</p>
       <div class="puzzle-board-wrap"><div class="puzzle-board is-empty" id="puzzle-board"><div class="puzzle-empty"><span class="puzzle-empty__mark">✦</span><p>Your permanent puzzle is loading.</p></div></div></div>
       <p class="puzzle-help">Drag a piece onto another piece to swap them. On touch screens, tap two pieces.</p>
-      <div class="puzzle-complete" id="puzzle-complete" role="status"><strong>picture complete. well done girllll</strong><img class="puzzle-kudos" src="../../assets/Bob%20Esponja%20Dancing%20GIF.gif" alt="SpongeBob dancing as a celebration"></div>
+      <div class="puzzle-complete" id="puzzle-complete" role="status"><strong>picture complete. well done girllll</strong><img class="puzzle-kudos" src="assets/Bob%20Esponja%20Dancing%20GIF.gif" alt="SpongeBob dancing as a celebration"></div>
       <a class="backlink" href="../../index.html">← Back to all labs</a>
     </div>
   </section>
@@ -182,7 +182,7 @@
   var pieces = [];
   var selected = null;
   var dragged = null;
-  var storageKey = "gigibs-puzzle-image";
+  var puzzleImage = "assets/puzzle%20image.png";
 
   function message(text, progress) { status.innerHTML = progress ? text + " <strong>" + progress + "</strong>" : text; }
   function randomOrder(total) {
@@ -236,7 +236,7 @@
     render();
     update();
   };
-  try { var saved = JSON.parse(localStorage.getItem(storageKey)); if (saved && saved.source) loadImage(saved.source, saved.name || "your permanent image"); else message("No permanent image found in this browser."); } catch (error) { message("No permanent image found in this browser."); }
+  loadImage(puzzleImage, "puzzle image");
 }());
 </script>
 <script src="../labs.js"></script>
