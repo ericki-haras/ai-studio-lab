@@ -101,4 +101,12 @@ window.LABS = [
     branch: "magenta",
     added: "2026-08-20"
   }
+  ,{
+    slug: "analuluiza",
+    name: "Ana Luiza's Lab",
+    owner: "Ana Luiza",
+    blurb: "A two-week road trip through Portugal, by car — Lisbon to a wedding up north and back.",
+    branch: "amber",
+    added: "2026-08-27"
+  }
 ];
