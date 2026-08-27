@@ -118,6 +118,14 @@ window.LABS = [
     added: "2026-08-27"
   }
   ,{
+    slug: "anna-guercio",
+    name: "Anna's Lab",
+    owner: "Anna Guercio",
+    blurb: "Bloom Drift — a tiny driving game where you steer a pink car and collect flowers.",
+    branch: "lilac",
+    added: "2026-08-27"
+  }
+  ,{
     slug: "giovana",
     name: "gigibs lab",
     owner: "Giovana",
