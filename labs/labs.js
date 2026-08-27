@@ -103,9 +103,9 @@ window.LABS = [
   }
   ,{
     slug: "analuluiza",
-    name: "Ana Luiza's Lab",
+    name: "Ana Lu's Lab",
     owner: "Ana Luiza",
-    blurb: "A two-week road trip through Portugal, by car — Lisbon to a wedding up north and back.",
+    blurb: "Visual memories from a two-week road trip through Portugal.",
     branch: "amber",
     added: "2026-08-27"
   }
