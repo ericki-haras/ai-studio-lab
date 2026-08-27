@@ -7,10 +7,10 @@
    and score on contact — there's no fail state, just driving and collecting.
 
    Gameplay (speeds, spawn timing, collision, input) is unchanged from the
-   original build. Everything added since is purely decorative: a bit of
-   suspension lean/bounce on the car, a bob on each flower, a particle burst
-   and HUD bump on collection — none of it touches carY, flower.x/y, score
-   timing, or the hitboxes those decorations sit on top of.
+   original build. Every visual element is a real sprite cropped from the
+   Bloom Drift asset sheet (see labs/anna-guercio/assets/) rather than
+   hand-drawn SVG/CSS — this file only ever swaps <img> src attributes or
+   moves/sizes elements; it never draws anything itself.
    ========================================================================== */
 (function () {
   "use strict";
@@ -20,55 +20,75 @@
 
   var road = stage.querySelector("[data-drive-road]");
   var carEl = stage.querySelector("[data-drive-car]");
+  var carImgEl = stage.querySelector("[data-drive-car-img]");
   var flowersEl = stage.querySelector("[data-drive-flowers]");
   var grassTop = stage.querySelector("[data-drive-grass-top]");
   var grassBottom = stage.querySelector("[data-drive-grass-bottom]");
   var grassFlowersTop = stage.querySelector("[data-drive-grass-flowers-top]");
   var grassFlowersBottom = stage.querySelector("[data-drive-grass-flowers-bottom]");
-  var laneLine = stage.querySelector("[data-drive-line]");
   var hudEl = stage.querySelector("[data-drive-score]");
   var countEl = stage.querySelector("[data-drive-count]");
   var trailEl = stage.querySelector("[data-drive-trail]");
+  var trailImgEl = stage.querySelector("[data-drive-trail-img]");
   var upBtn = document.querySelector("[data-drive-up]");
   var downBtn = document.querySelector("[data-drive-down]");
   var restartBtn = document.querySelector("[data-drive-restart]");
 
   var calm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  var SCROLL_SPEED = 90;    // px/s — road + grass background scroll
+  var SCROLL_SPEED = 145;   // px/s — road + grass background scroll
   var CAR_SPEED = 160;      // px/s — vertical car movement
-  var FLOWER_SPEED = 90;    // px/s — matches scroll speed so flowers read as fixed to the road
+  var FLOWER_SPEED = 145;   // px/s — must match SCROLL_SPEED so flowers read as fixed to the road
   var FLOWER_SIZE = 42;
   var PAD = 6;
   var MAX_FLOWERS = 3;
   var MIN_GAP_Y = 56;
   var SPAWN_MIN = 900;
   var SPAWN_MAX = 1900;
-  /* soft-but-vivid base/deeper pairs — pink, buttercup, lavender, peach,
-     sky, coral — so each flower gets a gentle shading band instead of one
-     flat colour, and the road reads as a lot more colourful at a glance */
-  var FLOWER_COLORS = [
-    { base: "#FF8AC0", dark: "#E2589C" },
-    { base: "#FFDD6B", dark: "#F0B93E" },
-    { base: "#B892F0", dark: "#9868DE" },
-    { base: "#FFAD7A", dark: "#F08A4E" },
-    { base: "#7FD4E8", dark: "#4FB0C9" },
-    { base: "#FF7F8A", dark: "#E85560" }
-  ];
-  var PARTICLE_COLORS = ["#FF8AC0", "#FFDD6B", "#B892F0", "#7FD4E8"];
 
-  /* decorative grass flowers — purely visual scenery in the grass strips.
+  var FLOWER_SPRITES = [
+    "assets/flowers/flower-1.png",
+    "assets/flowers/flower-2.png",
+    "assets/flowers/flower-3.png",
+    "assets/flowers/flower-4.png",
+    "assets/flowers/flower-5.png",
+    "assets/flowers/flower-6.png"
+  ];
+  var PARTICLE_SPRITES = [
+    "assets/effects/particle-flower.png",
+    "assets/effects/particle-star.png",
+    "assets/effects/particle-diamond.png"
+  ];
+  var CAR_FRAMES = [
+    "assets/player/car-driver-frame-1.png",
+    "assets/player/car-driver-frame-2.png",
+    "assets/player/car-driver-frame-3.png"
+  ];
+  var CAR_IDLE = "assets/player/car-driver-idle.png";
+  var CAR_FRAME_INTERVAL = 120; // ms between sprite-animation frames while moving
+
+  var RAINBOW_FRAMES = [
+    "assets/effects/rainbow-frame-1.png",
+    "assets/effects/rainbow-frame-2.png",
+    "assets/effects/rainbow-frame-3.png",
+    "assets/effects/rainbow-frame-4.png"
+  ];
+  var RAINBOW_FRAME_INTERVAL = 150; // ms between rainbow-trail frames while active
+
+  var DECOR_SPRITE = "assets/environment/decor-butterfly.png";
+
+  /* decorative grass sprites — purely visual scenery in the grass strips.
      They're never checked against the car and never removed on contact;
      they just drift left with the scroll and wrap back around. */
-  var DECOR_FLOWER_COUNT = 7;  // per grass strip (top + bottom)
-  var DECOR_FLOWER_SIZE = 42;  // matches FLOWER_SIZE, so road and grass flowers read as the same object
+  var DECOR_FLOWER_COUNT = 2;  // per grass strip — sparse, the tile art already carries most of the detail
+  var DECOR_FLOWER_SIZE = 34;
   var DECOR_PAD = 4;
 
   /* speed progression: SCROLL_SPEED/FLOWER_SPEED above stay the *base* values —
      everything below scales them by a multiplier derived from the score, so
      the original constants are never edited, only multiplied at use-time. */
-  var SPEED_GROWTH_FACTOR = Math.pow(2, 1 / 10); // multiplier ~doubles every 10 flowers
-  var MAX_SPEED_MULTIPLIER = 4.5;                // hard cap so it stays playable
+  var SPEED_GROWTH_FACTOR = Math.pow(2, 1 / 12); // multiplier ~doubles every 12 flowers
+  var MAX_SPEED_MULTIPLIER = 3.4;                // hard cap so it stays playable
   var SPEED_EASE_RATE = 1.4;                     // per-second ease toward the target — the "momentum" feel
   var RAINBOW_THRESHOLD = 2.2;                   // multiplier at which the trail starts fading in
   var RAINBOW_BOOST_AT = 0.6;                    // trail intensity (0-1) at which extra particles kick in
@@ -83,11 +103,16 @@
   var carTilt = 0;
   var carBounce = 0;
   var bouncePhase = 0;
+  var carAnimState = "idle";
+  var carFrameIndex = 0;
+  var carFrameTimer = 0;
 
   /* speed progression + rainbow trail state */
   var targetSpeedMultiplier = 1;
   var currentSpeedMultiplier = 1;
   var trailIntensity = 0;
+  var trailFrameIndex = 0;
+  var trailFrameTimer = 0;
 
   var flowers = [];
   var score = 0;
@@ -110,7 +135,11 @@
     return SPAWN_MIN + Math.random() * (SPAWN_MAX - SPAWN_MIN);
   }
 
-  /* exponential, capped: 0 flowers → 1x, 5 → ~1.4x, 10 → 2x, 20 → 4x, 25+ → capped at 4.5x */
+  function pick(list) {
+    return list[Math.floor(Math.random() * list.length)];
+  }
+
+  /* exponential, capped: 0 flowers → 1x, 5 → ~1.3x, 12 → 2x, 20 → ~3.2x, 21+ → capped at 3.4x */
   function speedMultiplierForScore(s) {
     return Math.min(MAX_SPEED_MULTIPLIER, Math.pow(SPEED_GROWTH_FACTOR, s));
   }
@@ -136,28 +165,6 @@
     applyCarTransform();
   }
 
-  function buildFlowerSvg(color) {
-    /* a compact head (top ~2/3 of the viewBox) leaves room for a visible
-       stem + leaf underneath instead of one drawn over the other */
-    return (
-      '<svg viewBox="0 0 24 24" width="100%" height="100%" aria-hidden="true">' +
-        '<ellipse class="drive-petal-shadow" cx="11" cy="20" rx="4.5" ry="1.1"></ellipse>' +
-        '<path class="drive-stem" d="M11,11.5 L11,19"></path>' +
-        '<ellipse class="drive-leaf" cx="8.4" cy="16" rx="2.3" ry="1.3" transform="rotate(-25 8.4 16)"></ellipse>' +
-        '<g fill="' + color.base + '">' +
-          '<ellipse cx="11" cy="4.3" rx="3.2" ry="2.5"></ellipse>' +
-          '<ellipse cx="14.7" cy="8" rx="2.5" ry="3.2"></ellipse>' +
-          '<ellipse cx="11" cy="11.7" rx="3.2" ry="2.5"></ellipse>' +
-          '<ellipse cx="7.3" cy="8" rx="2.5" ry="3.2"></ellipse>' +
-        '</g>' +
-        /* one soft shade band, bottom-right, for a little pixel-shaded depth */
-        '<ellipse cx="13.5" cy="9.5" rx="1.7" ry="2.3" fill="' + color.dark + '" opacity=".8"></ellipse>' +
-        '<ellipse class="drive-petal-shine" cx="9.7" cy="4.9" rx=".9" ry=".6"></ellipse>' +
-        '<circle cx="11" cy="8" r="2.6" fill="#FFC94D"></circle>' +
-      '</svg>'
-    );
-  }
-
   function spawnFlower() {
     var maxY = road.clientHeight - FLOWER_SIZE - PAD;
     var minY = PAD;
@@ -170,8 +177,6 @@
     } while (lastSpawnY !== null && Math.abs(y - lastSpawnY) < MIN_GAP_Y && attempts < 6);
     lastSpawnY = y;
 
-    var color = FLOWER_COLORS[Math.floor(Math.random() * FLOWER_COLORS.length)];
-
     var el = document.createElement("div");
     el.className = "drive-flower";
 
@@ -182,7 +187,12 @@
     art.style.setProperty("--flower-rot", (Math.random() * 16 - 8).toFixed(1) + "deg");
     art.style.setProperty("--flower-scale", (0.85 + Math.random() * 0.3).toFixed(2));
     art.style.animationDelay = (Math.random() * 1.8).toFixed(2) + "s";
-    art.innerHTML = buildFlowerSvg(color);
+
+    var img = document.createElement("img");
+    img.className = "pixel-img";
+    img.src = pick(FLOWER_SPRITES);
+    img.alt = "";
+    art.appendChild(img);
     el.appendChild(art);
 
     var x = road.clientWidth;
@@ -192,18 +202,23 @@
     flowers.push({ el: el, x: x, y: y });
   }
 
-  /* --- decorative grass flowers -------------------------------------------
-     Same flower artwork as the collectibles, just smaller and non-interactive.
-     They scroll at the same rate as the grass background so they never look
-     detached from the scenery, and wrap back around the right edge forever. */
+  /* --- decorative grass sprites --------------------------------------------
+     A sparse butterfly or two per strip, scrolling at the same rate as the
+     grass background so it never looks detached from the scenery, wrapping
+     back around the right edge forever. */
   function spawnDecorFlower(container, containerHeight, x) {
-    var color = FLOWER_COLORS[Math.floor(Math.random() * FLOWER_COLORS.length)];
     var y = DECOR_PAD + Math.random() * Math.max(0, containerHeight - DECOR_FLOWER_SIZE - DECOR_PAD * 2);
 
     var el = document.createElement("div");
     el.className = "drive-decor-flower";
     el.setAttribute("aria-hidden", "true");
-    el.innerHTML = buildFlowerSvg(color);
+
+    var img = document.createElement("img");
+    img.className = "pixel-img";
+    img.src = DECOR_SPRITE;
+    img.alt = "";
+    el.appendChild(img);
+
     el.style.transform = "translate3d(" + x + "px," + y + "px,0)";
     container.appendChild(el);
 
@@ -257,9 +272,14 @@
       p.className = "drive-particle";
       p.style.left = (x + FLOWER_SIZE / 2) + "px";
       p.style.top = (y + FLOWER_SIZE / 2) + "px";
-      p.style.background = PARTICLE_COLORS[i % PARTICLE_COLORS.length];
       p.style.setProperty("--px", (Math.cos(angle) * dist).toFixed(1) + "px");
       p.style.setProperty("--py", (Math.sin(angle) * dist).toFixed(1) + "px");
+
+      var img = document.createElement("img");
+      img.className = "pixel-img";
+      img.src = pick(PARTICLE_SPRITES);
+      img.alt = "";
+      p.appendChild(img);
       flowersEl.appendChild(p);
 
       (function (el) {
@@ -315,17 +335,23 @@
     currentSpeedMultiplier = 1;
 
     trailIntensity = 0;
+    trailFrameIndex = 0;
+    trailFrameTimer = 0;
     if (trailEl) {
       trailEl.style.opacity = "0";
-      trailEl.style.transform = "scaleX(.45)";
-      trailEl.classList.remove("is-boosted");
+      trailEl.style.transform = "translateY(-48%) scaleX(.45)";
     }
+    if (trailImgEl) trailImgEl.src = RAINBOW_FRAMES[0];
 
     keys.up = false;
     keys.down = false;
     carTilt = 0;
     carBounce = 0;
     bouncePhase = 0;
+    carAnimState = "idle";
+    carFrameIndex = 0;
+    carFrameTimer = 0;
+    if (carImgEl) carImgEl.src = CAR_IDLE;
     carY = maxCarY / 2;
     applyCarTransform();
   }
@@ -348,7 +374,7 @@
     currentSpeedMultiplier += (targetSpeedMultiplier - currentSpeedMultiplier) * Math.min(dt * SPEED_EASE_RATE, 1);
 
     /* rainbow trail intensity: 0 below the threshold, easing toward 1 as the
-       multiplier approaches the cap — drives opacity/length/particle count */
+       multiplier approaches the cap — drives opacity/length/frame-cycling */
     var rainbowTarget = clamp(
       (currentSpeedMultiplier - RAINBOW_THRESHOLD) / (MAX_SPEED_MULTIPLIER - RAINBOW_THRESHOLD),
       0, 1
@@ -356,8 +382,21 @@
     trailIntensity += (rainbowTarget - trailIntensity) * Math.min(dt * SPEED_EASE_RATE, 1);
     if (trailEl) {
       trailEl.style.opacity = trailIntensity.toFixed(3);
-      trailEl.style.transform = "scaleX(" + (0.45 + trailIntensity * 0.55).toFixed(3) + ")";
-      trailEl.classList.toggle("is-boosted", trailIntensity > RAINBOW_BOOST_AT);
+      trailEl.style.transform = "translateY(-48%) scaleX(" + (0.45 + trailIntensity * 0.55).toFixed(3) + ")";
+    }
+    if (trailImgEl) {
+      if (trailIntensity > 0.03) {
+        trailFrameTimer += dt * 1000;
+        if (trailFrameTimer > RAINBOW_FRAME_INTERVAL) {
+          trailFrameTimer = 0;
+          trailFrameIndex = (trailFrameIndex + 1) % RAINBOW_FRAMES.length;
+          trailImgEl.src = RAINBOW_FRAMES[trailFrameIndex];
+        }
+      } else if (trailFrameIndex !== 0) {
+        trailFrameIndex = 0;
+        trailFrameTimer = 0;
+        trailImgEl.src = RAINBOW_FRAMES[0];
+      }
     }
 
     /* decorative suspension lean + bounce — eases toward the current input,
@@ -374,14 +413,36 @@
     }
     applyCarTransform();
 
+    /* cycle the provided car+driver animation frames while moving, back to
+       the idle sprite at rest — swaps <img src>, never redraws the sprite */
+    if (carImgEl) {
+      if (!calm && dy !== 0) {
+        if (carAnimState !== "moving") {
+          carAnimState = "moving";
+          carFrameIndex = 0;
+          carFrameTimer = 0;
+          carImgEl.src = CAR_FRAMES[0];
+        }
+        carFrameTimer += dt * 1000;
+        if (carFrameTimer > CAR_FRAME_INTERVAL) {
+          carFrameTimer = 0;
+          carFrameIndex = (carFrameIndex + 1) % CAR_FRAMES.length;
+          carImgEl.src = CAR_FRAMES[carFrameIndex];
+        }
+      } else if (carAnimState !== "idle") {
+        carAnimState = "idle";
+        carImgEl.src = CAR_IDLE;
+      }
+    }
+
     /* background scroll is the one thing reduced motion turns off */
     if (!calm) {
       var scrollDelta = SCROLL_SPEED * currentSpeedMultiplier * dt;
       scrollOffset += scrollDelta;
       var off = -scrollOffset + "px";
-      laneLine.style.backgroundPositionX = off;
       grassTop.style.backgroundPositionX = off;
       grassBottom.style.backgroundPositionX = off;
+      road.style.backgroundPositionX = off;
 
       if (grassFlowersTop) {
         updateDecorFlowers(decorTop, grassFlowersTop.clientWidth, grassFlowersTop.clientHeight, scrollDelta);
