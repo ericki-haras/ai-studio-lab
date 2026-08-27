@@ -1,0 +1,402 @@
+/* ==========================================================================
+   Portugal road trip lab — route diagram, album covers, lightbox.
+   Lives entirely in labs/analuluiza/ — reuses tokens from ../../assets/site.css.
+   ========================================================================== */
+
+/* --- ambient background: swap the plotter grid for a faint road map ------- */
+/* page-scoped override of assets/site.css's body::before — only in effect
+   here, since portugal.css is only linked from this page. */
+body::before {
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='280' height='280'%3E%3Cpath d='M-10 50 Q60 10 130 55 T290 35' stroke='%233E7A5C' stroke-width='1.8' fill='none' stroke-dasharray='6 5'/%3E%3Cpath d='M-10 160 Q80 195 150 150 T290 185' stroke='%23B0473F' stroke-width='1.8' fill='none' stroke-dasharray='6 5'/%3E%3Cpath d='M40 -10 Q65 90 25 170 T55 290' stroke='%233E7A5C' stroke-width='1.8' fill='none' stroke-dasharray='5 4'/%3E%3Cpath d='M210 -10 Q180 100 225 190 T195 290' stroke='%23B0473F' stroke-width='1.8' fill='none' stroke-dasharray='5 4'/%3E%3Ccircle cx='128' cy='54' r='4' fill='%23B0473F'/%3E%3Ccircle cx='222' cy='150' r='4' fill='%233E7A5C'/%3E%3Ccircle cx='45' cy='185' r='4' fill='%23B0473F'/%3E%3C/svg%3E");
+  background-size: 280px 280px;
+  background-position: 0 0;
+  opacity: 0.5;
+}
+
+/* --- fado player (compact, header) ----------------------------------------- */
+.fado {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 26px;
+}
+
+.fado__toggle {
+  all: unset;
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid var(--wire);
+  background: var(--surface);
+  cursor: pointer;
+  transition: border-color .18s ease, background .18s ease;
+}
+
+.fado__toggle:hover,
+.fado__toggle:focus-visible { border-color: var(--branch); }
+
+/* play triangle by default */
+.fado__icon {
+  width: 0;
+  height: 0;
+  border-top: 6px solid transparent;
+  border-bottom: 6px solid transparent;
+  border-left: 9px solid var(--paper);
+  margin-left: 2px;
+}
+
+/* stop square once playing */
+.fado__toggle[aria-pressed="true"] .fado__icon {
+  width: 10px;
+  height: 10px;
+  margin-left: 0;
+  border: none;
+  border-radius: 2px;
+  background: var(--paper);
+}
+
+.fado__info {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.fado__label {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.03em;
+  color: var(--paper-dim);
+  text-decoration: none;
+}
+
+.fado__label:hover { color: var(--branch); }
+
+.fado__bars {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 14px;
+}
+
+.fado__bars span {
+  width: 2px;
+  height: 4px;
+  border-radius: 1px;
+  background: var(--paper-dim);
+  transition: background .18s ease;
+  animation-delay: calc(var(--i, 0) * .07s);
+}
+
+.fado.is-playing .fado__bars span {
+  background: var(--branch);
+  animation: fado-bar .9s ease-in-out infinite;
+}
+
+@keyframes fado-bar {
+  0%, 100% { height: 4px; }
+  50% { height: 14px; }
+}
+
+/* real iframe stays in the DOM for playback, invisible and out of flow */
+.fado__frame {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* --- route diagram -------------------------------------------------------- */
+.triproute {
+  margin-top: 34px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+}
+
+.triproute__list {
+  position: relative;
+  list-style: none;
+  margin: 0;
+  padding: 7px 4px 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  min-width: max-content;
+}
+
+.triproute__list::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 7px;
+  height: 2px;
+  background: var(--wire);
+  z-index: 0;
+}
+
+.triproute__stop {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 0 10px;
+  text-decoration: none;
+  color: var(--paper-dim);
+}
+
+.triproute__node {
+  position: relative;
+  z-index: 1;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--void);
+  border: 2px solid var(--wire);
+  transition: border-color .3s ease, box-shadow .3s ease;
+}
+
+.triproute__label {
+  position: relative;
+  z-index: 1;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  text-align: center;
+  transition: color .2s ease;
+}
+
+.triproute__stop:hover .triproute__node,
+.triproute__stop:focus-visible .triproute__node {
+  border-color: var(--branch);
+  box-shadow: 0 0 0 5px color-mix(in srgb, var(--branch) 16%, transparent);
+}
+
+.triproute__stop:hover .triproute__label,
+.triproute__stop:focus-visible .triproute__label {
+  color: var(--paper);
+}
+
+/* a car drives the length of the line, left to right, on a loop */
+.triproute__car {
+  position: absolute;
+  z-index: 2;
+  top: 7px;
+  left: 0;
+  font-size: 15px;
+  line-height: 1;
+  transform: translateY(-50%) scaleX(-1);
+  pointer-events: none;
+  animation: triproute-drive 7s ease-in-out infinite;
+}
+
+@keyframes triproute-drive {
+  0%   { left: 0%; opacity: 0; }
+  6%   { opacity: 1; }
+  92%  { opacity: 1; }
+  100% { left: calc(100% - 16px); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .triproute__car { display: none; }
+}
+
+/* --- album cover ----------------------------------------------------------- */
+.album {
+  all: unset;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+  padding: 16px;
+  background: var(--void-2);
+  border: 1px solid var(--wire-dim);
+  border-radius: 9px;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color .2s ease, transform .2s ease;
+}
+
+.album:hover,
+.album:focus-visible {
+  border-color: var(--branch);
+  transform: translateY(-2px);
+}
+
+.album__cover {
+  flex: none;
+  width: 128px;
+  height: 96px;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid var(--wire-dim);
+}
+
+.album__cover img { width: 100%; height: 100%; object-fit: cover; }
+
+.album__info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.album__name {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 20px;
+  letter-spacing: -0.02em;
+  color: var(--paper);
+}
+
+.album__sub {
+  font-family: var(--body);
+  font-weight: 400;
+  font-size: 13px;
+  letter-spacing: 0;
+  color: var(--paper-faint);
+  margin-left: 4px;
+}
+
+.album__blurb {
+  font-size: 13.5px;
+  color: var(--paper-dim);
+  line-height: 1.55;
+  max-width: 58ch;
+}
+
+.album__meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 2px;
+}
+
+.album__caret {
+  margin-left: auto;
+  flex: none;
+  width: 9px;
+  height: 9px;
+  border-right: 1.5px solid var(--paper-faint);
+  border-bottom: 1.5px solid var(--paper-faint);
+  transform: rotate(45deg);
+  transition: transform .22s cubic-bezier(.4,0,.2,1);
+}
+
+.album[aria-expanded="true"] .album__caret { transform: rotate(-135deg); }
+
+/* --- album panel (expand/collapse) ------------------------------------------ */
+.album__panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows .38s cubic-bezier(.4,0,.2,1);
+}
+
+.album__panel[data-open="true"] { grid-template-rows: 1fr; }
+
+.album__panel-inner { overflow: hidden; min-height: 0; }
+
+.album__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.photo {
+  all: unset;
+  display: block;
+  aspect-ratio: 4 / 3;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid var(--wire-dim);
+  cursor: pointer;
+  transition: border-color .18s ease, transform .18s ease;
+}
+
+.photo:hover,
+.photo:focus-visible {
+  border-color: var(--branch);
+  transform: translateY(-2px);
+}
+
+.photo img { width: 100%; height: 100%; object-fit: cover; }
+
+/* --- lightbox --------------------------------------------------------------- */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px;
+  background: color-mix(in srgb, var(--void) 88%, black 12%);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .2s ease, visibility .2s;
+}
+
+.lightbox[data-open="true"] { opacity: 1; visibility: visible; }
+
+.lightbox__img {
+  max-width: min(90vw, 1100px);
+  max-height: 82vh;
+  border-radius: 6px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, .5);
+}
+
+.lightbox__ctrl {
+  all: unset;
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 1px solid var(--wire);
+  color: var(--paper);
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  transition: border-color .16s ease, background .16s ease;
+}
+
+.lightbox__ctrl:hover { border-color: var(--branch); background: var(--surface-2); }
+
+.lightbox__close { top: 20px; right: 20px; }
+.lightbox__prev { left: 20px; top: 50%; transform: translateY(-50%); }
+.lightbox__next { right: 20px; top: 50%; transform: translateY(-50%); }
+
+.lightbox__count {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--paper-dim);
+}
+
+@media (max-width: 720px) {
+  .album { flex-direction: column; align-items: stretch; }
+  .album__cover { width: 100%; height: 160px; }
+  .album__caret { display: none; }
+
+  .lightbox { padding: 24px; }
+  .lightbox__ctrl { width: 36px; height: 36px; font-size: 17px; }
+  .lightbox__prev { left: 8px; }
+  .lightbox__next { right: 8px; }
+  .lightbox__close { top: 10px; right: 10px; }
+}

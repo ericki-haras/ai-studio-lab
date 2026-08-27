@@ -102,6 +102,22 @@ window.LABS = [
     added: "2026-08-20"
   }
   ,{
+    slug: "analuluiza",
+    name: "Ana Lu's Lab",
+    owner: "Ana Luiza",
+    blurb: "Visual memories from a two-week road trip through Portugal.",
+    branch: "amber",
+    added: "2026-08-27"
+  }
+  ,{
+    slug: "miguel-chiappa",
+    name: "Miguel Chiappa's Lab",
+    owner: "Miguel Chiappa",
+    blurb: "A tiny momentum-based platformer, played through a CRT set.",
+    branch: "amber",
+    added: "2026-08-27"
+  }
+  ,{
     slug: "anna-guercio",
     name: "Anna's Lab",
     owner: "Anna Guercio",
