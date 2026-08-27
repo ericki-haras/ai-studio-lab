@@ -68,23 +68,21 @@
         <span class="chip">Aug 8 – 22, 2026</span>
         <span class="chip">By car</span>
       </div>
-    </div>
-  </section>
 
-  <!-- ===== soundtrack ===== -->
-  <section class="row section reveal" id="fado">
-    <div class="row__graph">
-      <span class="node" data-node style="top: 8px"></span>
-    </div>
-    <div class="row__body">
-      <p class="eyebrow">Soundtrack</p>
-      <h2 class="display section__title">A Little Fado</h2>
-      <p class="lede" style="margin-top:0">
-        Amália Rodrigues, singing "Barco Negro" — the sound of Portugal, playing in the
-        background of this whole trip.
-      </p>
-      <div class="videoframe">
-        <iframe src="https://www.youtube.com/embed/uRuGfsuiq3k" title="Amália Rodrigues — Barco Negro" allow="encrypted-media" loading="lazy"></iframe>
+      <div class="fado rise" data-d="5">
+        <button class="fado__toggle" data-fado-toggle type="button" aria-pressed="false" aria-label="Play Barco Negro">
+          <span class="fado__icon" aria-hidden="true"></span>
+        </button>
+        <div class="fado__info">
+          <a class="fado__label" href="https://www.youtube.com/watch?v=uRuGfsuiq3k" target="_blank" rel="noopener">Barco Negro — Amália Rodrigues ↗</a>
+          <span class="fado__bars" aria-hidden="true">
+            <span style="--i:0"></span><span style="--i:1"></span><span style="--i:2"></span><span style="--i:3"></span>
+            <span style="--i:4"></span><span style="--i:5"></span><span style="--i:6"></span><span style="--i:7"></span>
+            <span style="--i:8"></span><span style="--i:9"></span><span style="--i:10"></span><span style="--i:11"></span>
+            <span style="--i:12"></span><span style="--i:13"></span><span style="--i:14"></span><span style="--i:15"></span>
+          </span>
+        </div>
+        <iframe id="fado-player" class="fado__frame" src="https://www.youtube.com/embed/uRuGfsuiq3k?enablejsapi=1&playsinline=1" title="Amália Rodrigues — Barco Negro" allow="autoplay; encrypted-media" tabindex="-1" aria-hidden="true"></iframe>
       </div>
     </div>
   </section>
@@ -96,7 +94,7 @@
     </div>
     <div class="row__body">
       <p class="eyebrow">Route · by car</p>
-      <h2 class="display section__title">The Loop</h2>
+      <h2 class="display section__title">The Itinerary</h2>
       <p class="lede" style="margin-top:0">Six stops. Click one to jump straight to its photos.</p>
 
       <nav class="triproute" aria-label="Trip stops">
@@ -325,6 +323,7 @@
 <script src="../labs.js"></script>
 <script src="../../assets/nav.js"></script>
 <script src="../../assets/site.js"></script>
+<script src="https://www.youtube.com/iframe_api"></script>
 <script src="portugal.js"></script>
 </body>
 </html>

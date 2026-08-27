@@ -86,3 +86,43 @@
     if (e.key === "ArrowRight") step(1);
   });
 })();
+
+/* --- fado player (YouTube IFrame API, video frame hidden) ------------------ */
+(function () {
+  "use strict";
+
+  var toggle = document.querySelector("[data-fado-toggle]");
+  var frame = document.getElementById("fado-player");
+  var widget = toggle && toggle.closest(".fado");
+  if (!toggle || !frame) return;
+
+  var player = null;
+  var pendingPlay = false;
+
+  window.onYouTubeIframeAPIReady = function () {
+    player = new YT.Player("fado-player", {
+      events: {
+        onReady: function () {
+          if (pendingPlay) player.playVideo();
+        },
+        onStateChange: function (e) {
+          var playing = e.data === YT.PlayerState.PLAYING;
+          toggle.setAttribute("aria-pressed", String(playing));
+          if (widget) widget.classList.toggle("is-playing", playing);
+        }
+      }
+    });
+  };
+
+  toggle.addEventListener("click", function () {
+    if (!player) {
+      pendingPlay = true;
+      return;
+    }
+    if (player.getPlayerState() === YT.PlayerState.PLAYING) {
+      player.pauseVideo();
+    } else {
+      player.playVideo();
+    }
+  });
+})();
