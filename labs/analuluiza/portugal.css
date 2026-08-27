@@ -3,6 +3,26 @@
    Lives entirely in labs/analuluiza/ — reuses tokens from ../../assets/site.css.
    ========================================================================== */
 
+/* --- video embed ------------------------------------------------------------ */
+.videoframe {
+  position: relative;
+  width: 100%;
+  max-width: 640px;
+  aspect-ratio: 16 / 9;
+  margin-top: 22px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--wire-dim);
+}
+
+.videoframe iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
 /* --- route diagram -------------------------------------------------------- */
 .triproute {
   margin-top: 34px;
@@ -17,6 +37,7 @@
   padding: 7px 4px 0;
   display: flex;
   align-items: flex-start;
+  justify-content: space-between;
   min-width: max-content;
 }
 
@@ -36,8 +57,7 @@
   flex-direction: column;
   align-items: center;
   gap: 10px;
-  flex: 1 0 118px;
-  padding: 0 6px;
+  padding: 0 10px;
   text-decoration: none;
   color: var(--paper-dim);
 }
