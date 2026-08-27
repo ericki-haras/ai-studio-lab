@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Anna's Lab — AI Studio Lab</title>
+<meta name="description" content="A lab in the Design Engineering Guild.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+
+<style>
+  /* a rolled 5-colour palette — overrides the site's shared tokens locally,
+     this page only. See CONTRIBUTING.md: assets/site.css stays untouched,
+     but a page can repoint its own tokens.
+     Neutrals are tinted off the violet brand hue so background, borders,
+     and ink all read as one family instead of a generic grayscale. */
+  :root {
+    --cyan: #23BADA;
+    --magenta: #E54F8A;
+    --amber: #EDC13B;
+    --lilac: #7834EA;
+    --branch: var(--lilac);
+
+    --void: #FBF9FF;
+    --void-2: #F3EEFC;
+    --surface: #EFE7FB;
+    --wire: #D3C6EE;
+    --wire-dim: #EAE2F7;
+
+    --paper: #241B3D;
+    --paper-dim: #5B5478;
+    --paper-faint: #857DA3;
+
+    --ok: #1F9D63;
+  }
+
+  /* .btn--primary borrows --void for its text colour, assuming --void is a
+     dark navy (it now isn't) — pin it to a fixed dark ink so the button
+     still reads on the bright cyan background. */
+  .btn--primary { color: #1B1330; }
+
+  /* ==========================================================================
+     Bloom Drift — cute pastel pixel-art visual system
+     --------------------------------------------------------------------------
+     A course-correction from an earlier "retro arcade" pass: no black
+     outlines, no hard bevels, no near-black surfaces. Depth here comes from
+     soft same-hue shading (light → base → deeper tone of the SAME colour)
+     rather than a dark outline + drop shadow. Where an edge genuinely needs
+     definition, it's a thin muted-mauve line, never black.
+     ========================================================================== */
+  :root {
+    --line: #C79BC7;
+    --line-soft: #E9D6EC;
+
+    --drive-shadow: rgba(178, 140, 190, .28);
+    --drive-shadow-soft: rgba(178, 140, 190, .16);
+    --drive-r-md: 14px;
+    --drive-r-lg: 26px;
+
+    --stage-bg-top: #F4E9FB;
+    --stage-bg-bottom: #FFE7F2;
+
+    --blush: #FFE3ED;
+    --pink-pale: #FFEDF5;
+    --pink: #FF9FC9;
+    --pink-deep: #E8749F;
+
+    --lavender: #C6A9EF;
+    --lavender-deep: #A47FDD;
+
+    --cream: #FFF8EE;
+
+    --sage-light: #C9E8BA;
+    --sage: #9BCB88;
+    --sage-deep: #74A862;
+
+    --butter: #FFE49A;
+    --butter-deep: #F0C463;
+
+    --peach: #FFCBA6;
+    --peach-deep: #F2A87A;
+
+    --sky: #B6DFF5;
+    --sky-deep: #8CC2E6;
+
+    --rock: #D8CBE8;
+    --rock-light: #EFE7F7;
+    --rock-deep: #B9A6D2;
+
+    --road: #C9A9E0;
+    --road-light: #E0C6F0;
+    --road-deep: #A67FC7;
+
+    --skin: #F3C79A;
+    --skin-light: #FCE2BE;
+    --skin-shade: #DDA872;
+
+    --hair: #A9764F;
+    --hair-light: #C79868;
+    --hair-dark: #8A5C3C;
+
+    --wheel: #8A7398;
+    --wheel-rim: #FFF8EE;
+    --wheel-hub: #C9AEF0;
+  }
+
+  /* ===== stage: a soft rounded "game card", not a cartridge frame ========== */
+  .drive-stage {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 338px;
+    margin-top: 22px;
+    padding: 6px;
+    border-radius: var(--drive-r-lg);
+    border: 2px solid var(--line-soft);
+    background:
+      radial-gradient(circle, #FFFFFF 0 1px, transparent 1.2px) 12px 10px / 60px 60px,
+      radial-gradient(circle, #FFFFFF 0 1px, transparent 1.2px) 34px 6px / 84px 84px,
+      linear-gradient(180deg, var(--stage-bg-top), var(--stage-bg-bottom));
+    background-repeat: repeat, repeat, no-repeat;
+    box-shadow: 0 16px 34px -20px var(--drive-shadow), 0 1px 0 rgba(255,255,255,.7) inset;
+  }
+
+  .drive-lane { position: relative; overflow: hidden; }
+
+  /* ===== grass: a little flower garden the road happens to run through ==== */
+  .drive-lane--grass {
+    flex: 0 0 24%;
+    border-radius: 10px;
+    background-color: var(--sage);
+    background-image:
+      linear-gradient(var(--sage-light), var(--sage) 45%, var(--sage-deep)),
+      /* fine all-over grain, so open patches of grass don't read as flat */
+      repeating-linear-gradient(110deg, rgba(255,255,255,.06) 0 1.5px, transparent 1.5px 6px),
+      radial-gradient(circle at 30% 40%, var(--sage-light) 0 1px, transparent 1.2px),
+      radial-gradient(circle at 60% 70%, var(--sage-deep) 0 1px, transparent 1.2px),
+      /* bush: self-shaded, same hue family, no outline */
+      radial-gradient(circle, var(--sage-deep) 0 11px, transparent 11px),
+      radial-gradient(circle, var(--sage) 0 8.5px, transparent 8.5px),
+      radial-gradient(circle, var(--sage-light) 0 4px, transparent 4px),
+      /* pebble: soft lavender-grey */
+      radial-gradient(circle, var(--rock-deep) 0 7px, transparent 7px),
+      radial-gradient(circle, var(--rock) 0 5.5px, transparent 5.5px),
+      radial-gradient(circle, var(--rock-light) 0 2px, transparent 2px),
+      /* four little flowers, each built from 4 petal dots + a warm centre
+         instead of one flat dot, so the grass reads as an actual garden */
+      radial-gradient(circle, var(--butter) 0 2.8px, transparent 2.8px),
+      radial-gradient(circle, var(--butter) 0 2.8px, transparent 2.8px),
+      radial-gradient(circle, var(--butter) 0 2.8px, transparent 2.8px),
+      radial-gradient(circle, var(--butter) 0 2.8px, transparent 2.8px),
+      radial-gradient(circle, var(--peach-deep) 0 1.6px, transparent 1.6px),
+      radial-gradient(circle, var(--lavender) 0 2.8px, transparent 2.8px),
+      radial-gradient(circle, var(--lavender) 0 2.8px, transparent 2.8px),
+      radial-gradient(circle, var(--lavender) 0 2.8px, transparent 2.8px),
+      radial-gradient(circle, var(--lavender) 0 2.8px, transparent 2.8px),
+      radial-gradient(circle, var(--peach-deep) 0 1.6px, transparent 1.6px),
+      radial-gradient(circle, var(--pink) 0 2.8px, transparent 2.8px),
+      radial-gradient(circle, var(--pink) 0 2.8px, transparent 2.8px),
+      radial-gradient(circle, var(--pink) 0 2.8px, transparent 2.8px),
+      radial-gradient(circle, var(--pink) 0 2.8px, transparent 2.8px),
+      radial-gradient(circle, var(--peach-deep) 0 1.6px, transparent 1.6px),
+      radial-gradient(circle, var(--sky) 0 2.8px, transparent 2.8px),
+      radial-gradient(circle, var(--sky) 0 2.8px, transparent 2.8px),
+      radial-gradient(circle, var(--sky) 0 2.8px, transparent 2.8px),
+      radial-gradient(circle, var(--sky) 0 2.8px, transparent 2.8px),
+      radial-gradient(circle, var(--peach-deep) 0 1.6px, transparent 1.6px),
+      /* little mushroom cap */
+      radial-gradient(circle, var(--peach-deep) 0 4.2px, transparent 4.2px),
+      radial-gradient(circle, var(--peach) 0 3px, transparent 3px),
+      /* tiny sparkle */
+      radial-gradient(circle, #FFFFFF 0 1.3px, transparent 1.3px);
+    background-size:
+      100% 100%,
+      100% 100%, 11px 11px, 15px 15px,
+      168px 168px, 168px 168px, 168px 168px,
+      120px 120px, 120px 120px, 120px 120px,
+      52px 52px, 52px 52px, 52px 52px, 52px 52px, 52px 52px,
+      60px 60px, 60px 60px, 60px 60px, 60px 60px, 60px 60px,
+      46px 46px, 46px 46px, 46px 46px, 46px 46px, 46px 46px,
+      64px 64px, 64px 64px, 64px 64px, 64px 64px, 64px 64px,
+      130px 130px, 130px 130px,
+      60px 60px;
+    background-position:
+      0 0,
+      0 0, 0 0, 5px 3px,
+      18px 20px, 18px 20px, 15px 15px,
+      64px 10px, 64px 10px, 62px 8px,
+      48px 16.8px, 51.2px 20px, 48px 23.2px, 44.8px 20px, 48px 20px,
+      70px 56.8px, 73.2px 60px, 70px 63.2px, 66.8px 60px, 70px 60px,
+      20px 51.8px, 23.2px 55px, 20px 58.2px, 16.8px 55px, 20px 55px,
+      95px 31.8px, 98.2px 35px, 95px 38.2px, 91.8px 35px, 95px 35px,
+      100px 12px, 100px 12px,
+      30px 50px;
+  }
+
+  .drive-lane--grass[data-drive-grass-top] { box-shadow: inset 0 -6px 8px -8px var(--drive-shadow-soft); }
+  .drive-lane--grass[data-drive-grass-bottom] { box-shadow: inset 0 6px 8px -8px var(--drive-shadow-soft); }
+
+  /* a soft cream "shoulder" between grass and road — a tone change, not a hard line */
+  .drive-lane--grass[data-drive-grass-top]::after,
+  .drive-lane--grass[data-drive-grass-bottom]::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--cream);
+    opacity: .6;
+  }
+  .drive-lane--grass[data-drive-grass-top]::after { bottom: 0; }
+  .drive-lane--grass[data-drive-grass-bottom]::after { top: 0; }
+
+  /* ===== road: soft lavender-plum, tonal not black =========================== */
+  .drive-lane--road {
+    flex: 1;
+    background-color: var(--road);
+    background-image:
+      linear-gradient(var(--road-light), var(--road) 40%, var(--road-deep)),
+      repeating-linear-gradient(135deg, rgba(255,255,255,.09) 0 2px, transparent 2px 6px),
+      /* soft worn "patch" for large-scale tonal variation */
+      radial-gradient(circle at 50% 50%, var(--road-deep) 0 50%, transparent 75%),
+      /* fine grain so the asphalt doesn't read as one flat fill */
+      radial-gradient(circle at 35% 25%, var(--road-light) 0 1px, transparent 1.3px),
+      radial-gradient(circle at 65% 65%, var(--road-deep) 0 1px, transparent 1.3px);
+    background-size:
+      100% 100%,
+      100% 100%,
+      170px 170px,
+      15px 15px,
+      19px 19px;
+    background-position:
+      0 0,
+      0 0,
+      30px 20px,
+      0 0,
+      8px 10px;
+    background-blend-mode: normal, normal, soft-light, normal, normal;
+    box-shadow: inset 0 5px 8px -6px var(--drive-shadow-soft), inset 0 -5px 8px -6px var(--drive-shadow-soft);
+  }
+
+  .drive-lane-line {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 5px;
+    transform: translateY(-50%);
+    background-image: repeating-linear-gradient(to right, var(--cream) 0 22px, transparent 22px 44px);
+    border-radius: 3px;
+    box-shadow: 0 1px 2px rgba(150, 110, 170, .25);
+    opacity: .95;
+  }
+
+  .drive-car {
+    position: absolute;
+    left: 125px;
+    top: 4px;
+    width: 116px;
+    height: 76px;
+    will-change: transform;
+  }
+
+  .drive-car svg { width: 100%; height: 100%; display: block; overflow: visible; }
+
+  /* ===== rainbow trail: soft flowing pastel ribbons + drifting sparkles,
+     living inside the car's own SVG so it inherits the car's transform for
+     free — JS only ever touches opacity/scale/class =========================== */
+  .drive-trail {
+    transform-box: fill-box;
+    transform-origin: 100% 50%;
+    transition: opacity .3s ease;
+    pointer-events: none;
+  }
+
+  .drive-trail__stream { transform-box: fill-box; }
+  .drive-trail__stream--a { animation: drive-trail-wave 1.3s ease-in-out infinite; }
+  .drive-trail__stream--b { animation: drive-trail-wave 1.6s ease-in-out infinite reverse; animation-delay: -.3s; }
+  .drive-trail__stream--c { animation: drive-trail-wave 1.1s ease-in-out infinite; animation-delay: -.5s; }
+
+  @keyframes drive-trail-wave {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(2.5px); }
+  }
+
+  .drive-trail__particle {
+    transform-box: fill-box;
+    animation: drive-trail-flow 1.1s ease-out infinite;
+  }
+
+  @keyframes drive-trail-flow {
+    0%   { transform: translateX(0) scale(1); opacity: .95; }
+    100% { transform: translateX(-16px) scale(.5); opacity: 0; }
+  }
+
+  .drive-trail__particle--extra,
+  .drive-trail__stream--extra { display: none; }
+  .drive-trail.is-boosted .drive-trail__particle--extra,
+  .drive-trail.is-boosted .drive-trail__stream--extra { display: block; }
+  .drive-trail.is-boosted .drive-trail__stream { opacity: .8; }
+
+  .drive-flowers {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  /* decorative grass flowers — purely visual, scrolled in sync with the
+     background by game.js; never checked for collision or collection */
+  .drive-grass-flowers {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .drive-decor-flower {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 42px;
+    height: 42px;
+    pointer-events: none;
+  }
+
+  /* ===== car + character artwork ==========================================
+     Depth comes from same-hue shading bands (light → base → deep) rather
+     than an outline; where a thin edge helps separate a shape, it's a
+     self-shade stroke of the SAME colour family, not a dark outline. ======= */
+  .drive-shadow { fill: var(--drive-shadow-soft); }
+
+  .drive-wheel-tire { fill: var(--wheel); }
+  .drive-wheel-rim { fill: var(--wheel-rim); }
+  .drive-wheel-hub { fill: var(--wheel-hub); }
+  .drive-wheel-glint { fill: #FFFFFF; opacity: .8; }
+
+  .drive-body {
+    fill: var(--pink);
+    stroke: var(--pink-deep);
+    stroke-width: 1.3;
+    stroke-linejoin: round;
+    paint-order: stroke fill;
+  }
+  .drive-body-shade { fill: var(--pink-deep); opacity: .85; }
+  .drive-body-shine { fill: var(--cream); opacity: .8; }
+  .drive-body-heart { fill: var(--lavender-deep); opacity: .85; }
+  .drive-windshield { fill: var(--sky); opacity: .85; }
+  .drive-headlight { fill: var(--butter); }
+
+  .drive-hair-back {
+    fill: var(--hair);
+    stroke: var(--hair-dark);
+    stroke-width: 1.3;
+    stroke-linejoin: round;
+    paint-order: stroke fill;
+  }
+  .drive-hair-shine { fill: var(--hair-light); opacity: .85; }
+  .drive-bangs { fill: var(--hair-dark); }
+
+  /* ponytail: a small wrapper group so the whole tail sways as one piece,
+     pivoting from where it's tied rather than each segment on its own */
+  .drive-ponytail-wrap {
+    transform-box: fill-box;
+    transform-origin: 56px 6px;
+    animation: drive-hair-sway 2.6s ease-in-out infinite;
+  }
+  .drive-ponytail {
+    fill: var(--hair);
+    stroke: var(--hair-dark);
+    stroke-width: 1.1;
+    stroke-linejoin: round;
+    paint-order: stroke fill;
+  }
+  .drive-hair-tie { fill: var(--pink-deep); }
+
+  @keyframes drive-hair-sway {
+    0%, 100% { transform: rotate(-3deg); }
+    50% { transform: rotate(3deg); }
+  }
+
+  .drive-top {
+    fill: var(--sky);
+    stroke: var(--sky-deep);
+    stroke-width: 1.2;
+    stroke-linejoin: round;
+    paint-order: stroke fill;
+  }
+  .drive-top-shine { fill: #FFFFFF; opacity: .55; }
+
+  .drive-skin {
+    fill: var(--skin);
+    stroke: var(--skin-shade);
+    stroke-width: 1.1;
+    stroke-linejoin: round;
+    paint-order: stroke fill;
+  }
+  .drive-skin-shine { fill: var(--skin-light); opacity: .8; }
+  .drive-skin-shade { fill: var(--skin-shade); opacity: .5; }
+  .drive-blush { fill: var(--pink); opacity: .55; }
+  .drive-eye { fill: #6B4E72; }
+  .drive-eye-shine { fill: #FFFFFF; }
+  .drive-smile { fill: none; stroke: #6B4E72; stroke-width: 1.2; stroke-linecap: round; }
+
+  /* ===== flowers: soft pixel-shaded collectibles with a stem + leaf ======== */
+  .drive-flower {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 42px;
+    height: 42px;
+    pointer-events: none;
+    will-change: transform;
+    transition: opacity .22s ease .05s;
+  }
+
+  .drive-flower__art {
+    display: block;
+    width: 100%;
+    height: 100%;
+    animation: drive-flower-bob 1.8s ease-in-out infinite;
+    animation-delay: var(--bob-delay, 0s);
+  }
+
+  @keyframes drive-flower-bob {
+    0%, 100% { transform: rotate(var(--flower-rot, 0deg)) translateY(0) scale(var(--flower-scale, 1)); }
+    50%      { transform: rotate(var(--flower-rot, 0deg)) translateY(-3px) scale(var(--flower-scale, 1)); }
+  }
+
+  .drive-flower.is-collected { opacity: 0; }
+  .drive-flower.is-collected .drive-flower__art {
+    animation: none;
+    transform: rotate(var(--flower-rot, 0deg)) scale(1.7);
+    transition: transform .22s ease;
+  }
+
+  .drive-petal-shadow { fill: var(--drive-shadow-soft); }
+  .drive-petal-shine { fill: #FFFFFF; opacity: .65; }
+  .drive-stem { stroke: var(--sage-deep); stroke-width: 1.3; stroke-linecap: round; fill: none; }
+  .drive-leaf { fill: var(--sage); }
+
+  /* a soft burst of round pastel petals/sparkles on collection — no hard
+     borders, gentle ease-out, auto-removed */
+  .drive-particle {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    margin-left: -3px;
+    margin-top: -3px;
+    border-radius: 50%;
+    pointer-events: none;
+    animation: drive-particle-burst .55s ease-out forwards;
+  }
+
+  @keyframes drive-particle-burst {
+    from { transform: translate3d(0, 0, 0) scale(1); opacity: .95; }
+    to   { transform: translate3d(var(--px, 20px), var(--py, -20px), 0) scale(.35); opacity: 0; }
+  }
+
+  /* ===== HUD: a cute sticker-like badge ===================================== */
+  .drive-hud {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: .02em;
+    padding: 6px 12px;
+    border-radius: 100px;
+    border: 1.5px solid var(--line);
+    background: linear-gradient(var(--pink-pale), var(--blush));
+    color: var(--pink-deep);
+    box-shadow: 0 4px 10px -5px var(--drive-shadow);
+  }
+
+  .drive-hud__count { display: inline-block; transform-origin: 50% 50%; }
+  .drive-hud.is-bumped .drive-hud__count { animation: drive-hud-bump .32s cubic-bezier(.34,1.56,.64,1); }
+
+  @keyframes drive-hud-bump {
+    0%   { transform: scale(1); }
+    40%  { transform: scale(1.35); }
+    100% { transform: scale(1); }
+  }
+
+  /* ===== actions row: soft pastel buttons, minimal border, gentle shadow === */
+  .drive-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-top: 18px;
+  }
+
+  .drive-buttons { display: flex; gap: 10px; }
+
+  .drive-btn {
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    justify-content: center;
+    font-size: 16px;
+    color: var(--pink-deep);
+    border: 1.5px solid var(--line);
+    border-radius: var(--drive-r-md);
+    background: linear-gradient(var(--pink-pale), var(--blush));
+    box-shadow: 0 3px 8px -4px var(--drive-shadow);
+    transition: transform .12s ease, box-shadow .12s ease;
+  }
+
+  .drive-btn:hover { transform: translateY(-1px); box-shadow: 0 5px 10px -4px var(--drive-shadow); }
+
+  .drive-btn:active {
+    transform: translateY(1px);
+    box-shadow: 0 1px 4px -2px var(--drive-shadow);
+  }
+
+  .drive-restart {
+    margin-left: auto;
+    color: var(--pink-deep);
+    border: 1.5px solid var(--line);
+    border-radius: var(--drive-r-md);
+    background: linear-gradient(var(--pink-pale), var(--blush));
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .02em;
+    padding: 10px 16px;
+    box-shadow: 0 3px 8px -4px var(--drive-shadow);
+    transition: transform .12s ease, box-shadow .12s ease;
+  }
+
+  .drive-restart:hover { transform: translateY(-1px); box-shadow: 0 5px 10px -4px var(--drive-shadow); }
+
+  .drive-restart:active {
+    transform: translateY(1px);
+    box-shadow: 0 1px 4px -2px var(--drive-shadow);
+  }
+
+  .drive-hint {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    font-family: var(--body);
+    font-size: 12.5px;
+    color: var(--paper-dim);
+  }
+
+  .drive-keys { display: inline-flex; align-items: center; gap: 4px; }
+
+  kbd.drive-key {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 5px;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    font-weight: 600;
+    font-style: normal;
+    color: var(--pink-deep);
+    background: var(--pink-pale);
+    border: 1.3px solid var(--line);
+    border-radius: 6px;
+  }
+
+  .drive-hint__or {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .04em;
+    color: var(--paper-faint);
+  }
+
+  .drive-hint__touch {
+    font-size: 11.5px;
+    color: var(--paper-faint);
+  }
+
+  /* ===== title: a soft two-tone logo with a tiny flower + leaf ============= */
+  .drive-title {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    text-shadow: 0 2px 0 rgba(255,255,255,.7), 0 6px 14px var(--drive-shadow-soft);
+  }
+
+  .drive-title__accent { width: 22px; height: 22px; flex: none; }
+  .drive-title__petal { fill: var(--lavender); }
+  .drive-title__center { fill: var(--butter); }
+  .drive-title__leaf { fill: var(--sage); }
+
+  .drive-title__word--a { color: var(--pink); }
+  .drive-title__word--b { color: var(--lavender-deep); }
+
+  @media (max-width: 720px) {
+    .drive-stage { height: 260px; }
+    .drive-car { width: 96px; height: 64px; left: 105px; top: 3px; }
+    .drive-hud { font-size: 11.5px; padding: 5px 10px; }
+    .drive-title__accent { display: none; }
+  }
+</style>
+
+<script>window.SITE_ROOT = "../../";</script>
+</head>
+<body>
+
+<!-- ===== nav ===== -->
+<header class="topbar">
+  <div class="topbar__inner">
+    <a class="brand" href="../../index.html">
+      <span class="brand__dot"></span>
+      <strong>ai-studio-lab</strong>
+      <span>/ lab/anna-guercio</span>
+    </a>
+
+    <nav aria-label="Main">
+      <ul class="navlist">
+        <li><a class="navlink" href="../../index.html">Home</a></li>
+        <li class="navgroup">
+          <button class="navlink" data-lab-toggle aria-expanded="false" aria-haspopup="true" aria-controls="lab-panel" aria-current="page">
+            Lab
+            <span class="navlink__caret" aria-hidden="true"></span>
+          </button>
+          <ul class="dropdown" id="lab-panel" data-lab-panel data-lab-menu></ul>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main class="shell spine">
+
+  <!-- ===== header ===== -->
+  <section class="row labhead">
+    <div class="row__graph">
+      <span class="node node--lit" style="top: 22px"></span>
+    </div>
+    <div class="row__body">
+      <p class="eyebrow rise" data-d="1">Lab · in review</p>
+      <h1 class="display labhead__name rise" data-d="2">Anna<br>Guercio</h1>
+
+      <p class="lede rise" data-d="3" style="margin-top:26px">
+        Product Designer com foco em interfaces e sistemas visuais. Este
+        espaço reúne experimentos, processos e peças do meu portfólio.
+      </p>
+
+      <div class="labhead__meta rise" data-d="4">
+        <span class="chip chip--branch">lab/anna-guercio</span>
+        <span class="chip">Product Designer</span>
+        <span class="chip">Anna Guercio</span>
+        <span class="chip">Added 2026-08-27</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== experiment 01: bloom drift ===== -->
+  <section class="row section reveal">
+    <div class="row__graph">
+      <span class="node" data-node style="top: 8px; --branch:#60E251"></span>
+    </div>
+    <div class="row__body">
+      <p class="eyebrow">Experiment 01</p>
+      <h2 class="display section__title drive-title">
+        <svg class="drive-title__accent" viewBox="0 0 24 24" aria-hidden="true">
+          <ellipse class="drive-title__leaf" cx="3" cy="18" rx="3.4" ry="2"></ellipse>
+          <ellipse class="drive-title__petal" cx="12" cy="4" rx="4" ry="3"></ellipse>
+          <ellipse class="drive-title__petal" cx="19" cy="12" rx="3" ry="4"></ellipse>
+          <ellipse class="drive-title__petal" cx="12" cy="20" rx="4" ry="3"></ellipse>
+          <ellipse class="drive-title__petal" cx="5" cy="12" rx="3" ry="4"></ellipse>
+          <circle class="drive-title__center" cx="12" cy="12" r="3.4"></circle>
+        </svg>
+        <span class="drive-title__word--a">Bloom</span>
+        <span class="drive-title__word--b">Drift</span>
+      </h2>
+      <p class="lede" style="margin-bottom:0">
+        Dirija, colete flores e acelere! 🌸
+      </p>
+
+      <div class="drive-stage" data-drive-stage tabindex="0" aria-label="Jogo: dirija o carro rosa e colete flores pela pista">
+        <div class="drive-lane drive-lane--grass" data-drive-grass-top>
+          <div class="drive-grass-flowers" data-drive-grass-flowers-top></div>
+        </div>
+        <div class="drive-lane drive-lane--road" data-drive-road>
+          <div class="drive-lane-line" data-drive-line></div>
+
+          <div class="drive-car" data-drive-car>
+            <svg viewBox="0 0 150 100" aria-hidden="true">
+              <!-- rainbow trail: hidden (opacity 0) below the speed threshold,
+                   see game.js for the intensity that drives opacity/scale/boost -->
+              <g class="drive-trail" data-drive-trail style="opacity:0">
+                <defs>
+                  <linearGradient id="bloomdrift-rainbow" x1="1" y1="0" x2="0" y2="0">
+                    <stop offset="0%" stop-color="#FFB3CB"></stop>
+                    <stop offset="20%" stop-color="#FFD9A6"></stop>
+                    <stop offset="40%" stop-color="#FFEFA3"></stop>
+                    <stop offset="60%" stop-color="#BCE7B0"></stop>
+                    <stop offset="80%" stop-color="#B6DFF5"></stop>
+                    <stop offset="100%" stop-color="#D5BFF2"></stop>
+                  </linearGradient>
+                </defs>
+                <path class="drive-trail__stream drive-trail__stream--a" fill="url(#bloomdrift-rainbow)" opacity=".5"
+                      d="M14,42 C-10,38 -30,46 -55,40 C-80,34 -110,44 -140,38 L-140,56 C-110,62 -80,52 -55,58 C-30,64 -10,56 14,54 Z"></path>
+                <path class="drive-trail__stream drive-trail__stream--b" fill="url(#bloomdrift-rainbow)" opacity=".58"
+                      d="M14,50 C-5,46 -25,52 -45,48 C-65,44 -85,50 -100,46 L-100,60 C-85,64 -65,58 -45,62 C-25,66 -5,58 14,62 Z"></path>
+                <path class="drive-trail__stream drive-trail__stream--c drive-trail__stream--extra" fill="url(#bloomdrift-rainbow)" opacity=".68"
+                      d="M14,55 C0,52 -15,56 -30,54 C-45,52 -60,56 -70,54 L-70,60 C-60,62 -45,58 -30,60 C-15,62 0,58 14,61 Z"></path>
+
+                <circle class="drive-trail__particle" cx="-22" cy="45" r="2.2" fill="#FFC3DC" style="animation-delay:-.1s"></circle>
+                <circle class="drive-trail__particle" cx="-48" cy="56" r="1.9" fill="#FFE4AE" style="animation-delay:-.4s"></circle>
+                <circle class="drive-trail__particle" cx="-74" cy="47" r="1.7" fill="#C7E8B8" style="animation-delay:-.7s"></circle>
+                <circle class="drive-trail__particle drive-trail__particle--extra" cx="-100" cy="58" r="1.9" fill="#B6DFF5" style="animation-delay:-.2s"></circle>
+                <circle class="drive-trail__particle drive-trail__particle--extra" cx="-125" cy="44" r="1.6" fill="#D5BFF2" style="animation-delay:-.55s"></circle>
+                <circle class="drive-trail__particle drive-trail__particle--extra" cx="-135" cy="60" r="1.5" fill="#FFC3DC" style="animation-delay:-.85s"></circle>
+              </g>
+
+              <ellipse class="drive-shadow" cx="75" cy="88" rx="64" ry="8"></ellipse>
+
+              <circle class="drive-wheel-tire" cx="38" cy="78" r="16"></circle>
+              <circle class="drive-wheel-tire" cx="108" cy="78" r="16"></circle>
+              <circle class="drive-wheel-rim" cx="38" cy="78" r="9"></circle>
+              <circle class="drive-wheel-rim" cx="108" cy="78" r="9"></circle>
+              <circle class="drive-wheel-hub" cx="38" cy="78" r="3.5"></circle>
+              <circle class="drive-wheel-hub" cx="108" cy="78" r="3.5"></circle>
+              <rect class="drive-wheel-glint" x="34" y="71" width="3" height="3"></rect>
+              <rect class="drive-wheel-glint" x="104" y="71" width="3" height="3"></rect>
+
+              <rect class="drive-body" x="14" y="40" width="114" height="32" rx="14"></rect>
+              <path class="drive-body" d="M124,44 Q150,50 148,58 Q150,66 124,66 Z"></path>
+              <rect class="drive-body-shade" x="14" y="60" width="114" height="12" rx="8"></rect>
+              <rect class="drive-body-shine" x="20" y="43" width="66" height="5" rx="2.5"></rect>
+              <path class="drive-body-heart" d="M33,50 q-3,-4 -6,-1 q-3,-3 -6,1 q0,4 6,7 q6,-3 6,-7 Z"></path>
+              <rect class="drive-windshield" x="98" y="30" width="18" height="14" rx="6"></rect>
+              <circle class="drive-headlight" cx="143" cy="57" r="4"></circle>
+
+              <!-- ponytail: three tapered, angled ellipses sweeping down and
+                   back, drawn first so it trails out from behind the head -->
+              <g class="drive-ponytail-wrap">
+                <ellipse class="drive-ponytail" cx="56" cy="8" rx="10" ry="12" transform="rotate(-20 56 8)"></ellipse>
+                <ellipse class="drive-ponytail" cx="44" cy="20" rx="8" ry="11" transform="rotate(-35 44 20)"></ellipse>
+                <ellipse class="drive-ponytail" cx="34" cy="32" rx="6" ry="8" transform="rotate(-45 34 32)"></ellipse>
+                <path class="drive-hair-shine" d="M50,4 Q58,0 62,6 Q56,9 50,4 Z"></path>
+                <ellipse class="drive-hair-tie" cx="58" cy="5" rx="3" ry="2.4"></ellipse>
+              </g>
+
+              <!-- crown: sits on top of the head, mostly covered by the head
+                   circle drawn below, only the top rim peeks out as a hairline -->
+              <ellipse class="drive-hair-back" cx="70" cy="4" rx="15" ry="10"></ellipse>
+
+              <rect class="drive-top" x="56" y="18" width="30" height="26" rx="12"></rect>
+              <rect class="drive-top-shine" x="60" y="21" width="8" height="5" rx="2.5"></rect>
+              <rect class="drive-skin" x="67" y="14" width="9" height="8"></rect>
+              <circle class="drive-skin" cx="73" cy="14" r="14"></circle>
+              <ellipse class="drive-skin-shade" cx="73" cy="23" rx="8" ry="4"></ellipse>
+              <rect class="drive-skin-shine" x="63" y="6" width="7" height="6" rx="3"></rect>
+
+              <ellipse class="drive-blush" cx="64" cy="18" rx="3.4" ry="2.2"></ellipse>
+              <ellipse class="drive-blush" cx="84" cy="18" rx="3.4" ry="2.2"></ellipse>
+
+              <path class="drive-bangs" d="M60,2 Q73,-6 87,2 Q87,10 73,9 Q60,10 60,2 Z"></path>
+
+              <circle class="drive-eye" cx="69" cy="12" r="1.8"></circle>
+              <circle class="drive-eye" cx="80" cy="12" r="1.8"></circle>
+              <circle class="drive-eye-shine" cx="69.6" cy="11.3" r=".6"></circle>
+              <circle class="drive-eye-shine" cx="80.6" cy="11.3" r=".6"></circle>
+
+              <path class="drive-smile" d="M70,20 Q73,22 76,20"></path>
+            </svg>
+          </div>
+
+          <div class="drive-flowers" data-drive-flowers></div>
+        </div>
+        <div class="drive-lane drive-lane--grass" data-drive-grass-bottom>
+          <div class="drive-grass-flowers" data-drive-grass-flowers-bottom></div>
+        </div>
+
+        <div class="drive-hud" data-drive-score aria-live="polite">
+          <span aria-hidden="true">🌸</span>
+          <span class="drive-hud__count" data-drive-count>0</span>
+        </div>
+      </div>
+
+      <div class="drive-actions">
+        <div class="drive-buttons">
+          <button class="btn drive-btn" data-drive-up type="button" aria-label="Subir">▲</button>
+          <button class="btn drive-btn" data-drive-down type="button" aria-label="Descer">▼</button>
+        </div>
+        <p class="drive-hint">
+          <span>Clique na pista e use</span>
+          <span class="drive-keys"><kbd class="drive-key">↑</kbd><kbd class="drive-key">↓</kbd></span>
+          <span class="drive-hint__or">ou</span>
+          <span class="drive-keys"><kbd class="drive-key">W</kbd><kbd class="drive-key">S</kbd></span>
+          <span class="drive-hint__touch">· toque no celular</span>
+        </p>
+        <button class="btn drive-restart" data-drive-restart type="button">↻ Restart</button>
+      </div>
+
+      <a class="backlink" href="../../index.html">← Back to all labs</a>
+    </div>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <div class="shell foot__inner">
+    <span>lab/anna-guercio</span>
+    <span><a href="../../index.html#ship">Workflow</a></span>
+  </div>
+</footer>
+
+<script src="../labs.js"></script>
+<script src="../../assets/nav.js"></script>
+<script src="../../assets/site.js"></script>
+<script src="game.js"></script>
+</body>
+</html>
