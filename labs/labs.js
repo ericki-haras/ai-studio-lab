@@ -101,4 +101,12 @@ window.LABS = [
     branch: "magenta",
     added: "2026-08-20"
   }
+  ,{
+    slug: "anna-guercio",
+    name: "Anna's Lab",
+    owner: "Anna Guercio",
+    blurb: "Bloom Drift — a tiny driving game where you steer a pink car and collect flowers.",
+    branch: "lilac",
+    added: "2026-08-27"
+  }
 ];
