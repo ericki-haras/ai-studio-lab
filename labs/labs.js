@@ -117,4 +117,12 @@ window.LABS = [
     branch: "amber",
     added: "2026-08-27"
   }
+  ,{
+    slug: "giovana",
+    name: "gigibs lab",
+    owner: "Giovana",
+    blurb: "Little bits of code with no purpose other than the fun of it.",
+    branch: "magenta",
+    added: "2026-08-27"
+  }
 ];

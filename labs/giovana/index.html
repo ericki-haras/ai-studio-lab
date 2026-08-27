@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<!-- ==========================================================================
+     LAB TEMPLATE
+     --------------------------------------------------------------------------
+     Don't edit this file. Copy the whole folder first:
+
+         cp -r labs/_template labs/your-name
+
+     Then work in your copy. There are five TODOs below — search for "TODO".
+     Everything after the header is yours to demolish.
+     ========================================================================== -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- TODO 1 — your name in the title -->
+<title>gigibs lab</title>
+<meta name="description" content="Little bits of code with no purpose other than the fun of it.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+
+<!-- TODO 2 — pick your branch colour: cyan, magenta, amber, or lilac.
+     Use the same one you put in labs/labs.js. -->
+<style>
+  :root { --branch: var(--magenta); }
+
+  body { background: #000000; }
+  body::before {
+    background-image:
+      radial-gradient(circle, rgba(255,255,255,.9) 0 1px, transparent 1.5px),
+      radial-gradient(circle, rgba(69,224,220,.75) 0 1px, transparent 1.5px),
+      radial-gradient(circle, rgba(255,92,168,.65) 0 1px, transparent 1.5px),
+      radial-gradient(circle, rgba(167,139,250,.55) 0 1px, transparent 1.5px);
+    background-position: 7px 14px, 41px 29px, 19px 52px, 58px 5px;
+    background-size: 83px 97px, 137px 121px, 191px 173px, 239px 211px;
+    opacity: .72;
+  }
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(ellipse at 15% 20%, rgba(69,224,220,.12), transparent 34%),
+      radial-gradient(ellipse at 83% 14%, rgba(255,92,168,.1), transparent 31%),
+      radial-gradient(ellipse at 58% 88%, rgba(167,139,250,.13), transparent 38%);
+    animation: universe-drift 18s ease-in-out infinite alternate;
+  }
+  @keyframes universe-drift { from { transform: scale(1); opacity: .72; } to { transform: scale(1.06); opacity: 1; } }
+  @media (prefers-reduced-motion: reduce) { body::after { animation: none; } }
+
+  .puzzle-intro__title { margin-bottom: 18px; }
+  .puzzle-intro__copy { color: var(--paper-dim); max-width: 680px; margin: 0 0 26px; }
+  .puzzle-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-bottom: 24px; }
+  .puzzle-button, .puzzle-select, .puzzle-upload { min-height: 42px; border: 1px solid var(--wire); border-radius: var(--r); color: var(--paper); background: var(--surface); font: 500 12px var(--mono); letter-spacing: .04em; text-transform: uppercase; }
+  .puzzle-button { padding: 10px 14px; cursor: pointer; }
+  .puzzle-button:hover { border-color: var(--branch); color: var(--branch); }
+  .puzzle-button--primary { background: var(--branch); border-color: var(--branch); color: var(--void); }
+  .puzzle-select { padding: 0 12px; }
+  .puzzle-status { min-height: 20px; margin: 0 0 14px; color: var(--paper-dim); font: 12px var(--mono); }
+  .puzzle-status strong { color: var(--branch); font-weight: 500; }
+  .puzzle-board-wrap { max-width: 760px; }
+  .puzzle-board { display: grid; width: 100%; aspect-ratio: 4 / 3; gap: 1px; padding: 4px; background: var(--wire); border: 1px solid var(--wire); box-shadow: 0 24px 60px rgba(0,0,0,.28); }
+  .puzzle-board.is-empty { display: flex; align-items: center; justify-content: center; background: var(--surface); }
+  .puzzle-empty { padding: 34px; text-align: center; color: var(--paper-dim); }
+  .puzzle-empty__mark { display: block; margin-bottom: 12px; color: var(--branch); font: 800 44px/1 var(--display); }
+  .puzzle-empty p { margin: 0; font-size: 14px; }
+  .puzzle-piece { min-width: 0; min-height: 0; border: 0; padding: 0; background-repeat: no-repeat; cursor: grab; transition: transform .18s ease, filter .18s ease; }
+  .puzzle-piece:hover { z-index: 2; filter: brightness(1.12); transform: scale(.985); }
+  .puzzle-piece.is-selected { z-index: 3; outline: 3px solid var(--branch); outline-offset: -3px; filter: brightness(1.18); }
+  .puzzle-piece.is-dragging { opacity: .45; cursor: grabbing; }
+  .puzzle-piece.is-correct { box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--ok) 70%, transparent); }
+  .puzzle-help { margin: 14px 0 0; color: var(--paper-faint); font: 11px var(--mono); }
+  .puzzle-complete { display: none; margin-top: 20px; padding: 16px 18px; border-left: 3px solid var(--ok); background: color-mix(in srgb, var(--ok) 10%, var(--surface)); }
+  .puzzle-complete.is-visible { display: block; }
+  .puzzle-complete strong { color: var(--ok); font-family: var(--mono); text-transform: uppercase; }
+  .puzzle-kudos { width: min(100%, 360px); margin-top: 14px; border-radius: var(--r); }
+  @media (max-width: 560px) { .puzzle-toolbar { align-items: stretch; } .puzzle-button, .puzzle-select { flex: 1 1 42%; text-align: center; } }
+</style>
+
+<script>window.SITE_ROOT = "../../";</script>
+</head>
+<body>
+
+<!-- ===== nav: leave this alone except for the branch name in the brand ===== -->
+<header class="topbar">
+  <div class="topbar__inner">
+    <a class="brand" href="../../index.html">
+      <span class="brand__dot"></span>
+      <strong>ai-studio-lab</strong>
+      <!-- TODO 3 — your branch name -->
+      <span>/ lab/giovana</span>
+    </a>
+
+    <nav aria-label="Main">
+      <ul class="navlist">
+        <li><a class="navlink" href="../../index.html">Home</a></li>
+        <li class="navgroup">
+          <button class="navlink" data-lab-toggle aria-expanded="false" aria-haspopup="true" aria-controls="lab-panel" aria-current="page">
+            Lab
+            <span class="navlink__caret" aria-hidden="true"></span>
+          </button>
+          <ul class="dropdown" id="lab-panel" data-lab-panel data-lab-menu></ul>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main class="shell spine">
+
+  <!-- ===== header ===== -->
+  <section class="row labhead">
+    <div class="row__graph">
+      <span class="node node--lit" style="top: 22px"></span>
+    </div>
+    <div class="row__body">
+      <p class="eyebrow rise" data-d="1">Lab · in review</p>
+
+      <!-- TODO 4 — your name. <br> wherever you want the line to break. -->
+      <h1 class="display labhead__name rise" data-d="2">gigibs lab</h1>
+
+      <p class="lede rise" data-d="3" style="margin-top:26px">
+        <!-- TODO 5 — two or three sentences on what you're exploring here. -->
+        little bits of code with no purpose other than the fun of it 🪩
+      </p>
+
+      <div class="labhead__meta rise" data-d="4">
+        <span class="chip chip--branch">lab/giovana</span>
+        <span class="chip">gigibs-labs</span>
+        <span class="chip">Added 2026-08-27</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="row section reveal">
+    <div class="row__graph">
+      <span class="node" data-node style="top: 8px"></span>
+    </div>
+    <div class="row__body">
+      <p class="eyebrow">Experiment 01 · image assembly</p>
+      <h2 class="display section__title puzzle-intro__title">puzzle for the girlies</h2>
+      <p class="puzzle-intro__copy">warning: reassembling this jigsaw may cause heart palpitations</p>
+      <div class="puzzle-toolbar" aria-label="Puzzle controls">
+        <select class="puzzle-select" id="puzzle-size" aria-label="Puzzle difficulty"><option value="3">3 × 3 · warm-up</option><option value="4">4 × 4 · focus</option><option value="5">5 × 5 · deep work</option><option value="10" selected>10 × 10 · deep focus</option></select>
+        <button class="puzzle-button puzzle-button--primary" id="puzzle-shuffle" type="button" disabled>Shuffle pieces</button>
+        <button class="puzzle-button" id="puzzle-reset" type="button" disabled>Reset</button>
+      </div>
+      <p class="puzzle-status" id="puzzle-status" aria-live="polite">Loading your permanent image...</p>
+      <div class="puzzle-board-wrap"><div class="puzzle-board is-empty" id="puzzle-board"><div class="puzzle-empty"><span class="puzzle-empty__mark">✦</span><p>Your permanent puzzle is loading.</p></div></div></div>
+      <p class="puzzle-help">Drag a piece onto another piece to swap them. On touch screens, tap two pieces.</p>
+      <div class="puzzle-complete" id="puzzle-complete" role="status"><strong>picture complete. well done girllll</strong><img class="puzzle-kudos" src="../../assets/Bob%20Esponja%20Dancing%20GIF.gif" alt="SpongeBob dancing as a celebration"></div>
+      <a class="backlink" href="../../index.html">← Back to all labs</a>
+    </div>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <div class="shell foot__inner">
+    <span>lab/giovana</span>
+    <span><a href="../../index.html#ship">Workflow</a></span>
+  </div>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+  var sizeInput = document.getElementById("puzzle-size");
+  var shuffle = document.getElementById("puzzle-shuffle");
+  var reset = document.getElementById("puzzle-reset");
+  var status = document.getElementById("puzzle-status");
+  var board = document.getElementById("puzzle-board");
+  var complete = document.getElementById("puzzle-complete");
+  var source = "";
+  var size = Number(sizeInput.value);
+  var pieces = [];
+  var selected = null;
+  var dragged = null;
+  var storageKey = "gigibs-puzzle-image";
+
+  function message(text, progress) { status.innerHTML = progress ? text + " <strong>" + progress + "</strong>" : text; }
+  function randomOrder(total) {
+    var order = Array.from({ length: total }, function (_, index) { return index; });
+    do { order.sort(function () { return Math.random() - .5; }); } while (order.every(function (item, index) { return item === index; }));
+    return order;
+  }
+  function update() {
+    var correct = pieces.filter(function (piece, index) { return piece === index; }).length;
+    message(correct === pieces.length ? "Puzzle complete." : correct + " of " + pieces.length + " pieces in place.", correct === pieces.length ? "100% aligned" : correct + " / " + pieces.length);
+    complete.classList.toggle("is-visible", correct === pieces.length);
+  }
+  function render() {
+    board.classList.remove("is-empty");
+    board.style.gridTemplateColumns = "repeat(" + size + ", 1fr)";
+    board.replaceChildren();
+    pieces.forEach(function (correctIndex, position) {
+      var piece = document.createElement("button");
+      var column = correctIndex % size;
+      var row = Math.floor(correctIndex / size);
+      piece.className = "puzzle-piece";
+      piece.type = "button";
+      piece.draggable = true;
+      piece.dataset.position = position;
+      piece.setAttribute("aria-label", "Puzzle piece " + (position + 1));
+      piece.style.backgroundImage = "url(\"" + source + "\")";
+      piece.style.backgroundSize = size * 100 + "% " + size * 100 + "%";
+      piece.style.backgroundPosition = column * 100 / (size - 1) + "% " + row * 100 / (size - 1) + "%";
+      if (correctIndex === position) piece.classList.add("is-correct");
+      piece.onclick = function () { if (!selected) { selected = piece; piece.classList.add("is-selected"); } else { var first = Number(selected.dataset.position); selected.classList.remove("is-selected"); selected = null; if (first !== position) swap(first, position); } };
+      piece.ondragstart = function () { dragged = piece; piece.classList.add("is-dragging"); };
+      piece.ondragend = function () { piece.classList.remove("is-dragging"); dragged = null; };
+      piece.ondragover = function (event) { event.preventDefault(); };
+      piece.ondrop = function (event) { event.preventDefault(); if (dragged && dragged !== piece) swap(Number(dragged.dataset.position), position); };
+      board.appendChild(piece);
+    });
+  }
+  function swap(first, second) { var temp = pieces[first]; pieces[first] = pieces[second]; pieces[second] = temp; render(); update(); }
+  function start() {
+    pieces = randomOrder(size * size);
+    shuffle.disabled = false;
+    reset.disabled = false;
+    render();
+    update();
+  }
+  function loadImage(data, name) { var image = new Image(); image.onload = function () { source = data; start(); message("Ready to solve " + name + ".", "0 / " + pieces.length); }; image.src = data; }
+  sizeInput.onchange = function () { size = Number(sizeInput.value); if (source) start(); };
+  shuffle.onclick = start;
+  reset.onclick = function () {
+    pieces = Array.from({ length: size * size }, function (_, index) { return index; });
+    render();
+    update();
+  };
+  try { var saved = JSON.parse(localStorage.getItem(storageKey)); if (saved && saved.source) loadImage(saved.source, saved.name || "your permanent image"); else message("No permanent image found in this browser."); } catch (error) { message("No permanent image found in this browser."); }
+}());
+</script>
+<script src="../labs.js"></script>
+<script src="../../assets/nav.js"></script>
+<script src="../../assets/site.js"></script>
+</body>
+</html>
