@@ -133,4 +133,12 @@ window.LABS = [
     branch: "magenta",
     added: "2026-08-27"
   }
+  ,{
+    slug: "laisarata",
+    name: "Laís Arata's Lab",
+    owner: "Laís Arata",
+    blurb: "Um galeria de fotos para apreciação dos meus gatos",
+    branch: "lilac",
+    added: "2026-08-27"
+  }
 ];

@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<!-- ==========================================================================
+     LAB TEMPLATE
+     --------------------------------------------------------------------------
+     Don't edit this file. Copy the whole folder first:
+
+         cp -r labs/_template labs/your-name
+
+     Then work in your copy. There are five TODOs below — search for "TODO".
+     Everything after the header is yours to demolish.
+     ========================================================================== -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- TODO 1 — your name in the title -->
+<title>Laís Arata's Lab — AI Studio Lab</title>
+<meta name="description" content="A lab in the Design Engineering Guild.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+
+<!-- TODO 2 — pick your branch colour: cyan, magenta, amber, or lilac.
+     Use the same one you put in labs/labs.js. -->
+<style>
+  :root {
+    /* Memphis palette — bright versions for fills/shapes/borders */
+    --pop-ink: #1A1A1A;
+    --pop-cream: #FDF6F0;
+    --pop-red: #FF71CE;    /* hot pink */
+    --pop-blue: #6A7BB4;   /* blue-purple */
+    --pop-yellow: #FFCE5C;
+    --pop-teal: #86CCCA;
+    /* darker, contrast-safe versions for anything that is actual text */
+    --pop-red-ink: #C2007D;
+    --pop-blue-ink: #3D4A80;
+    --branch: var(--pop-blue-ink);
+  }
+
+  /* Your own CSS goes here, or in a styles.css next to this file.
+     Either way, keep it inside your folder. */
+
+  /* full light theme for this page: kill the dark body + grid, relight nav/footer */
+  body { background: var(--pop-cream); }
+  body::before { display: none; }
+
+  .topbar { position: relative; background: #fff; border-bottom: 3px dashed var(--pop-ink); backdrop-filter: none; }
+  .brand, .brand strong { color: var(--pop-ink); }
+  .brand span { color: var(--pop-blue-ink); }
+  .navlink { color: var(--pop-ink); }
+  .navlink:hover, .navlink[aria-expanded="true"] { color: #fff; background: var(--pop-blue-ink); }
+  .navlink[aria-current="page"] { border-color: var(--pop-ink); }
+  .topbar .deco--circle { top: -20px; right: 120px; width: 30px; height: 30px; background: var(--pop-yellow); border: 3px solid var(--pop-ink); opacity: .85; }
+
+  .foot { position: relative; background: #fff; border-top: 3px dashed var(--pop-ink); }
+  .foot__inner { color: var(--pop-ink); }
+  .foot a { color: var(--pop-blue-ink); }
+  .foot a:hover { color: var(--pop-red-ink); }
+  .foot .deco--circle { bottom: -18px; left: 60px; width: 28px; height: 28px; background: var(--pop-teal); border: 3px solid var(--pop-ink); opacity: .85; }
+
+  /* a little more air below the sticky nav before the hero card starts */
+  .labhead { padding-top: 108px; }
+
+  /* Memphis confetti backdrop, scoped to this page's <main> only */
+  main.shell { position: relative; background: var(--pop-cream); overflow: hidden; }
+  main.shell::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.5;
+    background:
+      radial-gradient(circle at 6% 8%, var(--pop-teal) 0%, transparent 16%),
+      radial-gradient(circle at 92% 14%, var(--pop-yellow) 0%, transparent 14%),
+      radial-gradient(circle at 12% 88%, var(--pop-red) 0%, transparent 15%),
+      radial-gradient(circle at 90% 92%, var(--pop-blue) 0%, transparent 18%),
+      radial-gradient(circle at 50% 50%, transparent 0%, transparent 100%);
+  }
+  main.shell > * { position: relative; z-index: 1; }
+
+  /* decorative Memphis shapes: circles / triangles / squiggles scattered around */
+  .deco { position: absolute; z-index: 0; pointer-events: none; }
+  .deco--circle { border-radius: 50%; }
+  .deco--triangle { clip-path: polygon(50% 0%, 0% 100%, 100% 100%); }
+
+  /* intro panel: white card, shapes poking past its edges */
+  .labhead .row__body {
+    position: relative;
+    overflow: visible;
+    background: #fff;
+    border: 3px solid var(--pop-ink);
+    border-radius: 18px 4px 18px 4px;
+    padding: 34px 32px 28px;
+    box-shadow: 10px 10px 0 var(--pop-yellow);
+  }
+  .labhead .deco--hero-circle { top: -34px; right: 46px; width: 76px; height: 76px; background: var(--pop-teal); border: 3px solid var(--pop-ink); }
+  .labhead .deco--hero-triangle { bottom: -26px; left: 58px; width: 46px; height: 40px; background: var(--pop-red); transform: rotate(-12deg); }
+  .labhead .deco--hero-ring { top: 20px; right: -22px; width: 40px; height: 40px; border: 6px solid var(--pop-blue); border-radius: 50%; background: none; }
+
+  .labhead .eyebrow { color: var(--pop-blue-ink); font-weight: 800; }
+  .labhead .labhead__name {
+    font-family: var(--display);
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    text-transform: none;
+  }
+  .labhead .labhead__name .n1 { color: var(--pop-red-ink); }
+  .labhead .labhead__name .n2 { color: var(--pop-blue-ink); }
+  .labhead .lede { color: var(--pop-ink); }
+  .labhead .chip { border: 2px dashed var(--pop-ink); color: var(--pop-ink); font-weight: 700; background: #fff; }
+  .labhead .chip--branch { background: var(--pop-yellow); border-style: solid; }
+  .labhead .chip:nth-of-type(2) { background: color-mix(in srgb, var(--pop-red) 22%, #fff); }
+  .labhead .chip:nth-of-type(3) { background: color-mix(in srgb, var(--pop-teal) 30%, #fff); }
+
+  .section .eyebrow, .section__title { color: var(--pop-ink); }
+  .section .section__title { font-family: var(--display); font-weight: 800; letter-spacing: -0.01em; position: relative; text-transform: none; }
+  .section .section__title .n1 { color: var(--pop-red-ink); }
+  .section .section__title .n2 { color: var(--pop-blue-ink); }
+  .section .backlink { color: var(--pop-blue-ink); font-weight: 700; }
+  .section .backlink:hover { color: var(--pop-red-ink); }
+
+  /* photo gallery, Memphis tiles: dashed borders, asymmetric rotation */
+  .cat-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 22px;
+    margin-top: 28px;
+  }
+  .cat-gallery__item {
+    position: relative;
+    margin: 0;
+    background: #fff;
+    border: 3px dashed var(--pop-ink);
+    border-radius: 14px;
+    padding: 6px;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .cat-gallery__item:nth-child(4n+1) { background: var(--pop-red); transform: rotate(-2.5deg); }
+  .cat-gallery__item:nth-child(4n+2) { background: var(--pop-blue); transform: rotate(3deg); }
+  .cat-gallery__item:nth-child(4n+3) { background: var(--pop-yellow); transform: rotate(-3deg) scale(1.04); }
+  .cat-gallery__item:nth-child(4n+4) { background: var(--pop-teal); transform: rotate(2deg); }
+  .cat-gallery__item:hover { transform: rotate(0deg) scale(1.05); box-shadow: 0 10px 24px rgba(0,0,0,.18); }
+  .cat-gallery__item img { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 8px; }
+
+  /* numbered badge — always white-on-ink, so contrast holds regardless of mat colour */
+  .cat-gallery__n {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 2;
+    width: 26px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    color: var(--pop-ink);
+    border: 2px solid var(--pop-ink);
+    border-radius: 50%;
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 700;
+  }
+</style>
+
+<script>window.SITE_ROOT = "../../";</script>
+</head>
+<body>
+
+<!-- ===== nav: leave this alone except for the branch name in the brand ===== -->
+<header class="topbar">
+  <div class="topbar__inner">
+    <a class="brand" href="../../index.html">
+      <span class="brand__dot"></span>
+      <strong>ai-studio-lab</strong>
+      <!-- TODO 3 — your branch name -->
+      <span>/ lab/laisarata</span>
+    </a>
+
+    <nav aria-label="Main">
+      <ul class="navlist">
+        <li><a class="navlink" href="../../index.html">Home</a></li>
+        <li class="navgroup">
+          <button class="navlink" data-lab-toggle aria-expanded="false" aria-haspopup="true" aria-controls="lab-panel" aria-current="page">
+            Lab
+            <span class="navlink__caret" aria-hidden="true"></span>
+          </button>
+          <ul class="dropdown" id="lab-panel" data-lab-panel data-lab-menu></ul>
+        </li>
+      </ul>
+    </nav>
+    <span class="deco deco--circle" aria-hidden="true"></span>
+  </div>
+</header>
+
+<main class="shell spine">
+
+  <!-- ===== header ===== -->
+  <section class="row labhead">
+    <div class="row__graph">
+      <span class="node node--lit" style="top: 22px"></span>
+    </div>
+    <div class="row__body">
+      <span class="deco deco--circle deco--hero-circle"></span>
+      <span class="deco deco--triangle deco--hero-triangle"></span>
+      <span class="deco deco--hero-ring"></span>
+      <p class="eyebrow rise" data-d="1">🐱 Lab · in review</p>
+
+      <!-- TODO 4 — your name. <br> wherever you want the line to break. -->
+      <h1 class="display labhead__name rise" data-d="2"><span class="n1">Laís</span><br><span class="n2">Arata</span></h1>
+
+      <p class="lede rise" data-d="3" style="margin-top:26px">
+        Essa é uma galeria de fotos do meus gatos, pois eles pisam e merecem uma página apenas para apreciação de suas belezas e fofuras.
+      </p>
+
+      <div class="labhead__meta rise" data-d="4">
+        <span class="chip chip--branch">lab/laisarata</span>
+        <span class="chip">Laís Arata</span>
+        <span class="chip">Added 2026-08-27</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================
+       EVERYTHING BELOW IS YOURS. Delete it, rebuild it, ignore the grid
+       entirely. The only rules: stay in this folder, and keep the nav
+       and footer so people can get back out.
+       =================================================================== -->
+  <section class="row section reveal">
+    <div class="row__graph">
+      <span class="node" data-node style="top: 8px"></span>
+    </div>
+    <div class="row__body">
+      <p class="eyebrow">🐾 Experiments</p>
+      <h2 class="display section__title">
+        <span class="n1">Dolores</span> &amp; <span class="n2">Patrício</span>
+      </h2>
+
+      <div class="cat-gallery">
+        <figure class="cat-gallery__item"><span class="cat-gallery__n">01</span><img src="cats-photos/dolores.jpeg" alt="Dolores, a black and white cat"></figure>
+        <figure class="cat-gallery__item"><span class="cat-gallery__n">02</span><img src="cats-photos/patricio.jpeg" alt="Patrício, a black and white cat"></figure>
+        <figure class="cat-gallery__item"><span class="cat-gallery__n">03</span><img src="cats-photos/IMG_3060.jpg" alt="Foto de um dos gatos"></figure>
+        <figure class="cat-gallery__item"><span class="cat-gallery__n">04</span><img src="cats-photos/IMG_3245.jpg" alt="Foto de um dos gatos"></figure>
+        <figure class="cat-gallery__item"><span class="cat-gallery__n">05</span><img src="cats-photos/IMG_3348.jpg" alt="Foto de um dos gatos"></figure>
+        <figure class="cat-gallery__item"><span class="cat-gallery__n">06</span><img src="cats-photos/IMG_3356.jpg" alt="Foto de um dos gatos"></figure>
+        <figure class="cat-gallery__item"><span class="cat-gallery__n">07</span><img src="cats-photos/IMG_3885.jpg" alt="Foto de um dos gatos"></figure>
+        <figure class="cat-gallery__item"><span class="cat-gallery__n">08</span><img src="cats-photos/IMG_5670.jpg" alt="Foto de um dos gatos"></figure>
+      </div>
+
+      <a class="backlink" href="../../index.html">← Back to all labs 🐾</a>
+    </div>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <span class="deco deco--circle" aria-hidden="true"></span>
+  <div class="shell foot__inner">
+    <span>lab/laisarata</span>
+    <span><a href="../../index.html#ship">Workflow</a></span>
+  </div>
+</footer>
+
+<script src="../labs.js"></script>
+<script src="../../assets/nav.js"></script>
+<script src="../../assets/site.js"></script>
+</body>
+</html>
