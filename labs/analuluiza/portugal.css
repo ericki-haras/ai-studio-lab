@@ -1,0 +1,269 @@
+/* ==========================================================================
+   Portugal road trip lab — route diagram, album covers, lightbox.
+   Lives entirely in labs/analuluiza/ — reuses tokens from ../../assets/site.css.
+   ========================================================================== */
+
+/* --- route diagram -------------------------------------------------------- */
+.triproute {
+  margin-top: 34px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+}
+
+.triproute__list {
+  position: relative;
+  list-style: none;
+  margin: 0;
+  padding: 7px 4px 0;
+  display: flex;
+  align-items: flex-start;
+  min-width: max-content;
+}
+
+.triproute__list::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 7px;
+  height: 2px;
+  background: var(--wire);
+  z-index: 0;
+}
+
+.triproute__stop {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  flex: 1 0 118px;
+  padding: 0 6px;
+  text-decoration: none;
+  color: var(--paper-dim);
+}
+
+.triproute__node {
+  position: relative;
+  z-index: 1;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--void);
+  border: 2px solid var(--wire);
+  transition: border-color .3s ease, box-shadow .3s ease;
+}
+
+.triproute__label {
+  position: relative;
+  z-index: 1;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  text-align: center;
+  transition: color .2s ease;
+}
+
+.triproute__stop:hover .triproute__node,
+.triproute__stop:focus-visible .triproute__node {
+  border-color: var(--branch);
+  box-shadow: 0 0 0 5px color-mix(in srgb, var(--branch) 16%, transparent);
+}
+
+.triproute__stop:hover .triproute__label,
+.triproute__stop:focus-visible .triproute__label {
+  color: var(--paper);
+}
+
+/* --- album cover ----------------------------------------------------------- */
+.album {
+  all: unset;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+  padding: 16px;
+  background: var(--void-2);
+  border: 1px solid var(--wire-dim);
+  border-radius: 9px;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color .2s ease, transform .2s ease;
+}
+
+.album:hover,
+.album:focus-visible {
+  border-color: var(--branch);
+  transform: translateY(-2px);
+}
+
+.album__cover {
+  flex: none;
+  width: 128px;
+  height: 96px;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid var(--wire-dim);
+}
+
+.album__cover img { width: 100%; height: 100%; object-fit: cover; }
+
+.album__info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.album__name {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 20px;
+  letter-spacing: -0.02em;
+  color: var(--paper);
+}
+
+.album__sub {
+  font-family: var(--body);
+  font-weight: 400;
+  font-size: 13px;
+  letter-spacing: 0;
+  color: var(--paper-faint);
+  margin-left: 4px;
+}
+
+.album__blurb {
+  font-size: 13.5px;
+  color: var(--paper-dim);
+  line-height: 1.55;
+  max-width: 58ch;
+}
+
+.album__meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 2px;
+}
+
+.album__caret {
+  margin-left: auto;
+  flex: none;
+  width: 9px;
+  height: 9px;
+  border-right: 1.5px solid var(--paper-faint);
+  border-bottom: 1.5px solid var(--paper-faint);
+  transform: rotate(45deg);
+  transition: transform .22s cubic-bezier(.4,0,.2,1);
+}
+
+.album[aria-expanded="true"] .album__caret { transform: rotate(-135deg); }
+
+/* --- album panel (expand/collapse) ------------------------------------------ */
+.album__panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows .38s cubic-bezier(.4,0,.2,1);
+}
+
+.album__panel[data-open="true"] { grid-template-rows: 1fr; }
+
+.album__panel-inner { overflow: hidden; min-height: 0; }
+
+.album__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.photo {
+  all: unset;
+  display: block;
+  aspect-ratio: 4 / 3;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid var(--wire-dim);
+  cursor: pointer;
+  transition: border-color .18s ease, transform .18s ease;
+}
+
+.photo:hover,
+.photo:focus-visible {
+  border-color: var(--branch);
+  transform: translateY(-2px);
+}
+
+.photo img { width: 100%; height: 100%; object-fit: cover; }
+
+/* --- lightbox --------------------------------------------------------------- */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px;
+  background: color-mix(in srgb, var(--void) 88%, black 12%);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .2s ease, visibility .2s;
+}
+
+.lightbox[data-open="true"] { opacity: 1; visibility: visible; }
+
+.lightbox__img {
+  max-width: min(90vw, 1100px);
+  max-height: 82vh;
+  border-radius: 6px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, .5);
+}
+
+.lightbox__ctrl {
+  all: unset;
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 1px solid var(--wire);
+  color: var(--paper);
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  transition: border-color .16s ease, background .16s ease;
+}
+
+.lightbox__ctrl:hover { border-color: var(--branch); background: var(--surface-2); }
+
+.lightbox__close { top: 20px; right: 20px; }
+.lightbox__prev { left: 20px; top: 50%; transform: translateY(-50%); }
+.lightbox__next { right: 20px; top: 50%; transform: translateY(-50%); }
+
+.lightbox__count {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--paper-dim);
+}
+
+@media (max-width: 720px) {
+  .album { flex-direction: column; align-items: stretch; }
+  .album__cover { width: 100%; height: 160px; }
+  .album__caret { display: none; }
+
+  .lightbox { padding: 24px; }
+  .lightbox__ctrl { width: 36px; height: 36px; font-size: 17px; }
+  .lightbox__prev { left: 8px; }
+  .lightbox__next { right: 8px; }
+  .lightbox__close { top: 10px; right: 10px; }
+}
