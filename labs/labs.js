@@ -101,4 +101,12 @@ window.LABS = [
     branch: "magenta",
     added: "2026-08-20"
   }
+  ,{
+    slug: "miguel-chiappa",
+    name: "Miguel Chiappa's Lab",
+    owner: "Miguel Chiappa",
+    blurb: "A tiny momentum-based platformer, played through a CRT set.",
+    branch: "amber",
+    added: "2026-08-27"
+  }
 ];
